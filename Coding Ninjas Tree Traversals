@@ -1,0 +1,69 @@
+/*********************************************************
+
+ Following is the TreeNode structure:
+
+ class TreeNode {
+     int data;
+     TreeNode left;
+     TreeNode right;
+     TreeNode() {
+         this.data = 0;
+         this.left = null;
+         this.right = null;
+     }
+     TreeNode(int data) {
+         this.data = data;
+         this.left = null;
+         this.right = null;
+     }
+     TreeNode(int data, TreeNode left, TreeNode right) {
+         this.data = data;
+         this.left = left;
+         this.right = right;
+     }
+ };
+ ********************************************************/
+
+import java.util.*;
+public class Solution {
+    public static List<List<Integer>> getTreeTraversal(TreeNode root) {
+        // Write your code here.
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> list1 = new ArrayList<>();
+        List<Integer> list2 = new ArrayList<>();
+        List<Integer> list3 = new ArrayList<>();
+        inorder(root, list1);
+        preorder(root, list2);
+        postorder(root, list3);
+
+        result.add(list1);
+        result.add(list2);
+        result.add(list3);
+
+        return result;
+    }
+
+    //function for inorder traversal
+    private static void inorder(TreeNode root, List<Integer> current){
+        if(root == null) return;
+        inorder(root.left, current);
+        current.add(root.data);
+        inorder(root.right, current);
+    }
+
+    //function for preorder traversal
+    private static void preorder(TreeNode root, List<Integer> current){
+        if(root == null) return;
+        current.add(root.data);
+        preorder(root.left, current);
+        preorder(root.right, current);
+    }
+
+    //function for postorder traversal
+    private static void postorder(TreeNode root, List<Integer> current){
+        if(root == null) return;
+        postorder(root.left, current);
+        postorder(root.right, current);
+        current.add(root.data);
+    }
+}
