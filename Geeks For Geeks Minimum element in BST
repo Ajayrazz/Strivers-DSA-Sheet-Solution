@@ -1,0 +1,19 @@
+class Solution {
+    // Function to find the minimum element in the given BST.
+    int minValue(Node root) {
+        // code here
+        if(root == null) return 0;
+        ArrayList<Integer> list = new ArrayList<>();
+        inorder(root, list);
+        return list.get(0);
+    }
+    
+    void inorder(Node root, ArrayList<Integer> list){
+        if(root == null){
+            return;
+        }
+        inorder(root.left, list);
+        list.add(root.data);
+        inorder(root.right, list);
+    }
+}
