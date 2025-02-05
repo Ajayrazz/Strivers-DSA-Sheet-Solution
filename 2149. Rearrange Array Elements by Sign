@@ -1,0 +1,25 @@
+class Solution {
+    public int[] rearrangeArray(int[] nums) {
+        int[] result = new int[nums.length];
+        Stack<Integer> posIdx = new Stack<>();
+        Stack<Integer> negIdx = new Stack<>();
+
+        //iterating the nums array
+        for(int i = nums.length - 1; i >= 0; i--){
+            if(nums[i] >= 0){
+                posIdx.push(i);
+            }
+            else {
+                negIdx.push(i);
+            }
+        }
+
+        int idx = 0;
+        while(idx < nums.length){
+            result[idx++] = nums[posIdx.pop()];
+            result[idx++] = nums[negIdx.pop()];
+        }
+
+        return result;
+    }
+}
