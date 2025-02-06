@@ -1,0 +1,26 @@
+class Solution {
+    public int missingNumber(int[] nums) {
+        int max_val = Integer.MIN_VALUE;
+        int min_val = Integer.MAX_VALUE;
+        //put all the element in the set
+        Set<Integer> set = new HashSet<>();
+        //iterating nums
+        for(int num : nums){
+            set.add(num);
+            max_val = Math.max(max_val, num);
+            min_val = Math.min(min_val, num);
+        }
+
+        for(int i = min_val; i <= max_val; i++){
+            //case 1
+            if(!set.contains(i)){
+                return i;
+            }
+            if(set.contains(i)){
+                set.remove(i);
+            }
+        }
+        
+        return (set.isEmpty() && min_val > 0) ? min_val - 1 : max_val + 1;
+    }
+}
