@@ -1,0 +1,29 @@
+
+class Solution {
+    public int rowWithMax1s(int arr[][]) {
+        // code here
+        Map<Integer, Integer> map = new HashMap<>();
+        int max_one = 0;
+        
+        //Iterating The 2D Array
+        for(int i = 0; i < arr.length; i++){
+            int count = 0;
+            for(int j = 0; j < arr[0].length; j++){
+                if(arr[i][j] == 1){
+                    count++;
+                }
+            }
+            map.put(i, count);
+            max_one = Math.max(max_one, count);
+        }
+        
+        //Iterating the HashMap
+        for(Map.Entry<Integer, Integer> num : map.entrySet()){
+            if(num.getValue() == max_one){
+                return num.getKey();
+            }
+        }
+        
+        return -1;
+    }
+}
