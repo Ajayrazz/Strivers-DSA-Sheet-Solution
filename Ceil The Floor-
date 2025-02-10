@@ -1,0 +1,27 @@
+public class Solution {
+    public static int[] getFloorAndCeil(int[] a, int n, int x) {
+      // Wriute your code here.
+      int fl = Integer.MIN_VALUE;
+      int cl = Integer.MAX_VALUE;
+      for(int i = 0; i < n; i++){
+        if(a[i] <= x){
+          fl = Math.max(fl, a[i]);
+        }
+        
+        if(a[i] >= x){
+          cl = Math.min(cl, a[i]);
+        }
+      }
+
+      if(fl == Integer.MIN_VALUE){
+        fl = -1;
+      }
+
+      if(cl == Integer.MAX_VALUE){
+        cl = -1;
+      }
+
+      return new int[]{fl,cl};
+    }
+    
+}
