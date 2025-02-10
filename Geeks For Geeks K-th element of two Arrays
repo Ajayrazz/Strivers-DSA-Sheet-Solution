@@ -1,0 +1,19 @@
+class Solution {
+    public int kthElement(int a[], int b[], int k) {
+        // code here
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for(int n : a){
+            pq.offer(n);
+        }
+        
+        for(int num : b){
+            pq.offer(num);
+        }
+        
+        while(k-- > 1){
+            pq.poll();
+        }
+        
+        return pq.peek();
+    }
+}
