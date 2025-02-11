@@ -1,0 +1,36 @@
+class Solution {
+    public int minEatingSpeed(int[] piles, int h) {
+        int low = 1;
+        int high = find_max(piles);
+
+        while(low <= high){
+            int mid = low + (high - low)/2;
+            int total_hour = calculate_tot_hour(piles, mid);
+            if(total_hour <= h){
+                high = mid - 1;
+            }
+            else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+
+    //function to find the maximum value in the given piles array
+    private int find_max(int[] piles){
+        int max = Integer.MIN_VALUE;
+        for(int num : piles){
+            max = Math.max(max, num);
+        }
+        return max;
+    }
+
+    //function to calculate the total hour
+    private int calculate_tot_hour(int[] piles, int hourly){
+        int total_hour = 0;
+        for(int i = 0; i < piles.length; i++){
+            total_hour += Math.ceil((double)piles[i] / (double)hourly);
+        }
+        return total_hour;
+    }
+}
