@@ -1,0 +1,35 @@
+class Solution {
+    public int smallestDivisor(int[] nums, int threshold) {
+        int low = 1;
+        int high = find_max(nums);
+        while(low <= high){
+            int mid = low + (high - low) / 2;
+            int total_val = find_value(nums, mid);
+            if(total_val > threshold){
+                low = mid + 1;
+            }
+            else {
+                high = mid - 1;
+            }
+        }
+        return low;
+    }
+
+    //function to find the maximum value in the given nums array
+    private int find_max(int[] nums){
+        int max = Integer.MIN_VALUE;
+        for(int num : nums){
+            max = Math.max(max, num);
+        }
+        return max;
+    }
+
+    //function to find the max the total value
+    private int find_value(int[] nums, int mid){
+        int total_val = 0;
+        for(int i = 0; i < nums.length; i++){
+            total_val += Math.ceil((double) nums[i] / (double) mid);
+        }
+        return total_val;
+    }
+}
