@@ -1,0 +1,26 @@
+class Solution {
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(nums, result, new ArrayList<>());
+        return result;
+    }
+
+    private void backtrack(int[] nums, List<List<Integer>> result, List<Integer> current){
+        //Base Case
+        if(current.size() == nums.length){
+            result.add(new ArrayList<>(current));
+            return;
+        }
+
+        for(int num : nums){
+            //check if contain
+            if(current.contains(num)){
+                continue;
+            }
+
+            current.add(num);
+            backtrack(nums, result, current);
+            current.remove(current.size() - 1);
+        }
+    }
+}
