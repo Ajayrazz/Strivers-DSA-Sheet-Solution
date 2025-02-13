@@ -1,0 +1,41 @@
+class Solution {
+
+    public Map<Character, String> map = Map.of(
+        '2' , "abc",
+        '3' , "def",
+        '4' , "ghi",
+        '5' , "jkl",
+        '6' , "mno",
+        '7' , "pqrs",
+        '8' , "tuv",
+        '9' , "wxyz"
+    );
+    public List<String> letterCombinations(String digits) {
+        //Base Case
+        if(digits.length() == 0){
+            return new ArrayList<>();
+        }
+
+        List<String> result = new ArrayList<>();
+        backtrack(digits, result, "", 0);
+        return result;
+    }
+
+    private void backtrack(String digits, List<String> result, String current, int index){
+        //Base Case
+        if(current.length() == digits.length()){
+            result.add(current);
+            return;
+        }
+        else if(index >= digits.length()){
+            return;
+        }
+        else {
+            String digit = map.get(digits.charAt(index));
+            //Split it into array and then iterate it
+            for(char c : digit.toCharArray()){
+                backtrack(digits, result, current + c, index + 1);
+            }
+        }
+    }
+}
