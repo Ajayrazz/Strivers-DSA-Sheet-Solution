@@ -1,0 +1,29 @@
+class Solution {
+    public String reverseWords(String s) {
+        //Split the given string into Array Of String
+        String[] words = s.split(" ");
+        //Reverse the words array
+        int left = 0, right = words.length - 1;
+        while(left <= right){
+            String temp = words[left];
+            words[left] = words[right];
+            words[right] = temp;
+            left++;
+            right--;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        //Iterate the words array
+        for(String word : words){
+            //Base Case
+            if(!word.isEmpty()){
+                if(sb.length() > 0){
+                    sb.append(" ");
+                }
+                sb.append(word);
+            }
+        }
+
+        return sb.toString();
+    }
+}
