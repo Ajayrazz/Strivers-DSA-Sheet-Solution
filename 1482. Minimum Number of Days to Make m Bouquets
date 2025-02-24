@@ -1,0 +1,46 @@
+class Solution {
+    public int minDays(int[] bloomDay, int m, int k) {
+        long value = (long) m * k;
+        //Base Case
+        if(value > bloomDay.length){
+            return -1;   //no possible case
+        }
+
+        //Find the minimum and maximum value
+        int mini = Integer.MAX_VALUE, maxi = Integer.MIN_VALUE;
+        for(int i = 0; i < bloomDay.length; i++){
+            mini = Math.min(mini, bloomDay[i]);
+            maxi = Math.max(maxi, bloomDay[i]);
+        }
+
+        //Apply Binary Search
+        while(mini <= maxi){
+            int mid = mini + (maxi - mini) / 2;
+            if(possible(bloomDay, mid, m, k)){
+                maxi = mid - 1;
+            }
+            else {
+                mini = mid + 1;
+            }
+        }
+
+        return mini;
+    }
+
+    //Helper Function
+    private boolean possible(int[] arr, int day, int m, int k){
+        int count = 0, noOfB = 0;
+        //Count the Number of Bouquet
+        for(int i = 0; i < arr.length; i++){
+            if(arr[i] <= day){
+                count++;
+            }
+            else {
+                noOfB += (count / k);
+                count = 0;
+            }
+        }
+        noOfB += (count / k);
+        return noOfB >= m;
+    }
+}
