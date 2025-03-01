@@ -1,0 +1,42 @@
+class Solution
+{
+    public static Node addOne(Node head) 
+    { 
+      // Return head of list after adding one
+    Node ln = head;
+     
+    if (head.next == null)
+    {
+        head.data += 1;
+        return head;
+    }
+ 
+    Node t = head;
+    int prev;
+ 
+    while (t.next != null)
+    {
+        if (t.data != 9)
+        {
+            ln = t;
+        }
+        t = t.next;
+    }
+    if (t.data == 9 && ln != null)
+    {
+        t = ln;
+        t.data += 1;
+        t = t.next;
+        while (t != null)
+        {
+            t.data = 0;
+            t = t.next;
+        }
+    }
+    else
+    {
+        t.data += 1;
+    }
+    return head;
+}
+}
