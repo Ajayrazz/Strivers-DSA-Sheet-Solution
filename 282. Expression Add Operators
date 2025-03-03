@@ -1,0 +1,35 @@
+class Solution {
+    List<String> ans = new ArrayList<>();
+    public List<String> addOperators(String num, int target) {
+        dfs(0, "", 0, 0, num, target);
+        return ans;
+    }
+
+    private void dfs(int index, String current, long resSoFar, long prevNum, String num, int target){
+        //Base Case
+        if(index == num.length()){
+            if(resSoFar == target){
+                ans.add(current);
+                return;
+            }
+        }
+
+        for(int j = index; j < num.length(); j++){
+            //skip the leading zero
+            if(j > index && num.charAt(index) == '0'){
+                break;
+            }
+
+            long currNum = Long.parseLong(num.substring(index, j + 1));
+
+            if(index == 0){
+                dfs(j + 1, current + currNum , currNum, currNum, num, target);
+            }
+            else {
+                dfs(j + 1, current + '+' + currNum, resSoFar + currNum, currNum, num, target);
+                dfs(j + 1, current + '-' + currNum, resSoFar - currNum, - currNum, num, target);
+                dfs(j + 1, current + '*' + currNum, resSoFar - prevNum + prevNum * currNum, prevNum * currNum, num, target);
+            }
+        }
+    }
+}
