@@ -1,0 +1,45 @@
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        int [][] prefix_sum = new int [matrix.length][matrix[0].length];
+
+        for(int i=0; i<matrix[0].length; i++){
+            int cnt = 0;
+            for(int j=0; j<matrix.length; j++){
+                if(matrix[j][i] == '1'){
+                    cnt++;
+                }else{
+                    cnt = 0;
+                }
+
+                prefix_sum[j][i] = cnt;
+            }
+        } 
+
+        int max = 0;
+
+        for(int i=0; i<prefix_sum.length; i++){
+            Stack <Integer> s = new Stack<>();
+            for(int j=0; j<prefix_sum[i].length; j++){
+                while(!s.isEmpty() && prefix_sum[i][s.peek()] >= prefix_sum[i][j]){
+                    int nse = j;
+                    int val = prefix_sum[i][s.pop()];
+                    int pse = s.isEmpty() ? -1 : s.peek();
+
+                    max = Math.max(max, val * (nse-pse-1));
+                }
+
+                s.push(j);
+            }
+
+            while(!s.isEmpty()){
+                int nse = prefix_sum[i].length;
+                int val = prefix_sum[i][s.pop()];
+                int pse = s.isEmpty() ? -1 : s.peek();
+
+                max = Math.max(max, val * (nse-pse-1));
+            }
+        }
+
+        return max;
+    }
+}
