@@ -1,0 +1,56 @@
+class Solution {
+    // Function to convert an infix expression to a postfix expression.
+    public static String infixToPostfix(String s) {
+        // Your code here
+        int i = 0;
+        Stack<Character> stack = new Stack<>();
+        StringBuilder sb = new StringBuilder();
+        
+        while(i < s.length()){
+            //check for operand
+            if((s.charAt(i) >= 'A' && s.charAt(i) <= 'Z') || (s.charAt(i) >= 'a' && s.charAt(i) <= 'z') || (s.charAt(i) >= '0' && s.charAt(i) <= '9')){
+                sb.append(s.charAt(i));
+            }
+            else if(s.charAt(i) == '('){
+                stack.push(s.charAt(i));
+            }
+            else if(s.charAt(i) == ')'){
+                while(!stack.isEmpty() && stack.peek() != '('){
+                    sb.append(stack.peek());
+                    stack.pop();
+                }
+                stack.pop();
+            }
+            else {
+                while(!stack.isEmpty() && (priority(s.charAt(i)) <= priority(stack.peek()))){
+                    sb.append(stack.peek());
+                    stack.pop();
+                }
+                stack.push(s.charAt(i));
+            }
+            i++;
+        }
+        
+        while(!stack.isEmpty()){
+            sb.append(stack.peek());
+            stack.pop();
+        }
+        
+        return sb.toString();
+    }
+    
+    //function for calculating the prority of operator
+    private static int priority(char ch){
+        if(ch == '+' || ch == '-'){
+            return 1;
+        }
+        else if(ch == '*' || ch == '/'){
+            return 2;
+        }
+        else if(ch == '^'){
+            return 3;
+        }
+        
+        return -1;
+    }
+}
