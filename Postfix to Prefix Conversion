@@ -1,0 +1,41 @@
+class Solution {
+    
+    static boolean isOperator(char x)
+    {
+
+        switch (x) {
+        case '+':
+        case '-':
+        case '/':
+        case '*':
+            return true;
+        }
+        return false;
+    }
+    
+    static String postToPre(String post_exp) {
+        // code here
+        int i = 0;
+        Stack<String> stack = new Stack<>();
+        while(i < post_exp.length()){
+            char ch = post_exp.charAt(i);
+            if(isOperator(ch)){
+                String t1 = stack.peek();
+                stack.pop();
+                String t2 = stack.peek();
+                stack.pop();
+                String temp = ch + t2 + t1;
+                stack.push(temp);
+            }
+            else {
+                stack.push(String.valueOf(ch));
+            }
+            i++;
+        }
+        String ans = "";
+        for(String str : stack){
+            ans += str;
+        }
+        return ans;
+    }
+}
