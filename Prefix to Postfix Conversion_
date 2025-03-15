@@ -1,0 +1,45 @@
+class Solution {
+    
+    static boolean isOperator(char x)
+    {
+        switch (x) {
+        case '+':
+        case '-':
+        case '/':
+        case '*':
+            return true;
+        }
+        return false;
+    }
+    
+    static String preToPost(String pre_exp) {
+        // code here
+        int i = pre_exp.length() - 1;
+        Stack<String> s = new Stack<>();
+        while(i >= 0){
+            char ch = pre_exp.charAt(i);
+            if (isOperator(ch)) 
+            {
+                // pop two operands from stack
+                String op1 = s.peek();
+                s.pop();
+                String op2 = s.peek();
+                s.pop();
+
+                // concat the operands and operator
+                String temp = op1 + op2 + ch;
+
+                // Push String temp back to stack
+                s.push(temp);
+            }
+
+            // if symbol is an operand
+            else {
+                // push the operand to the stack
+                s.push(String.valueOf(ch));
+            }
+            i--;
+        }
+        return s.peek();
+    }
+}
