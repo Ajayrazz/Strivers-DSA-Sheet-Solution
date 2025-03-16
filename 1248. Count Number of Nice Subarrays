@@ -1,0 +1,38 @@
+class Solution {
+    public int numberOfSubarrays(int[] nums, int k) {
+        //convert the element with even value to zero in the given nums array
+        for(int i = 0; i < nums.length; i++){
+            if(nums[i] % 2 == 0){
+                nums[i] = 0;
+            } else {
+                nums[i] = 1;
+            }
+        }
+
+        return numberOfSubArrayLessThanK(nums, k) - numberOfSubArrayLessThanK(nums, k - 1);
+    }
+
+    private int numberOfSubArrayLessThanK(int[] nums, int k){
+        int left = 0, sum = 0, count = 0;
+
+        //Base Case
+        if(k < 0){
+            return 0;
+        }
+
+        for(int right = 0; right < nums.length; right++){
+            sum += nums[right];
+
+            while(sum > k){
+                sum -= nums[left];
+                left++;
+            }
+
+            if(sum <= k){
+                count += (right - left + 1);
+            }
+        }
+
+        return count;
+    }
+}
