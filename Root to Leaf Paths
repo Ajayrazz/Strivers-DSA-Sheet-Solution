@@ -1,0 +1,32 @@
+class Solution {
+    public static ArrayList<ArrayList<Integer>> Paths(Node root) {
+        // code here
+        if(root == null){
+            return new ArrayList<>();
+        }
+        
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        ArrayList<Integer> temp = new ArrayList<>();
+        pathUtils(root, result, temp);
+        
+        return result;
+    }
+    
+    private static void pathUtils(Node root, ArrayList<ArrayList<Integer>> result, ArrayList<Integer> temp){
+        //base case
+        if(root == null){
+            return;
+        }
+        
+        temp.add(root.data);
+        
+        if(root.left == null && root.right == null){
+            result.add(new ArrayList<>(temp));
+        } else {
+            pathUtils(root.left, result, temp);
+            pathUtils(root.right, result, temp);
+        }
+        
+        temp.remove(temp.size() - 1);
+    }
+}
