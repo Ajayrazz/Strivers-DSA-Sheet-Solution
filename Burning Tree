@@ -1,0 +1,62 @@
+class Solution {
+    /*class Node {
+        int data;
+        Node left;
+        Node right;
+
+        Node(int data) {
+            this.data = data;
+            left = null;
+            right = null;
+        }
+    }*/
+
+    public static int minTime(Node root, int target) {
+        // code here
+        int[] ans = {0};
+        Helper(root, ans, target);
+        return ans[0];
+    }
+    
+    //Helper Function
+    private static int Helper(Node root, int[] ans, int target){
+        //Base Case
+        if(root == null){
+            return -1;
+        }
+        
+        if(root.data == target){
+            int depth = Height(root) - 1;
+            ans[0] = Math.max(ans[0], depth);
+            return 1;
+        }
+        
+        int left = Helper(root.left, ans, target);
+        if(left != -1){
+            int depth = Height(root.right);
+            ans[0] = Math.max(ans[0], depth + left);
+            return left + 1;
+        }
+        
+        int right = Helper(root.right, ans, target);
+        if(right != -1){
+            int depth = Height(root.left);
+            ans[0] = Math.max(ans[0], depth + right);
+            return right + 1;
+        }
+        
+        return -1;
+    }
+    
+    //Function to calculate the height of the binary tree
+    public static int Height(Node root){
+        if(root == null){
+            return 0;
+        }
+        
+        int left = Height(root.left);
+        int right = Height(root.right);
+        
+        return Math.max(left, right) + 1;
+    }
+}
