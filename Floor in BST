@@ -1,0 +1,37 @@
+
+class Solution {
+    public static int floor(Node root, int x) {
+        // Code here
+        if(root == null){
+            return 0;
+        }
+        ArrayList<Integer> list = new ArrayList<>();
+        inorder(root, list);
+        
+        if(list.contains(x)){
+            return x;
+        }
+        
+        int max = Integer.MIN_VALUE;
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i) < x){
+                max = Math.max(max, list.get(i));
+            }
+        }
+        
+        if(max == Integer.MIN_VALUE){
+            return -1;
+        }
+        return max;
+    }
+    
+    public static void inorder(Node root, ArrayList<Integer> list){
+        if(root == null){
+            return;
+        }
+        
+        inorder(root.left, list);
+        list.add(root.data);
+        inorder(root.right, list);
+    }
+}
