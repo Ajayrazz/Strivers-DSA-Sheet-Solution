@@ -1,0 +1,30 @@
+class Tree {
+    // Function to return the ceil of given number in BST.
+    int findCeil(Node root, int key) {
+        if (root == null) return -1;
+        // Code here
+        ArrayList<Integer> list = new ArrayList<>();
+        inorder(root, list);
+        if(list.contains(key)){
+            return key;
+        }
+        
+        
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i) > key){
+                return list.get(i);
+            }
+        }
+        
+        return -1;
+    }
+    
+    void inorder(Node root, ArrayList<Integer> list){
+        if(root == null){
+            return;
+        }
+        inorder(root.left, list);
+        list.add(root.data);
+        inorder(root.right, list);
+    }
+}
