@@ -1,0 +1,64 @@
+class Solution {
+    public void solve(char[][] board) {
+        if (board == null || board.length == 0) {
+            return;
+        }
+
+        int row = board.length;
+        int col = board[0].length;
+
+        int[] delRow = new int[]{-1, 0, 1, 0};
+        int[] delCol = new int[]{0, 1, 0, -1};
+
+        // Initially, we will start by finding the element in the first and last row
+        for (int j = 0; j < col; j++) {
+            // Finding in the first row
+            if (board[0][j] == 'O') {
+                dfsCall(0, j, board, delRow, delCol);
+            }
+            // Finding in the last row
+            if (board[row - 1][j] == 'O') {
+                dfsCall(row - 1, j, board, delRow, delCol);
+            }
+        }
+
+        // Now we will find the elements in the first and last column
+        for (int i = 0; i < row; i++) {
+            // Finding element in the first column
+            if (board[i][0] == 'O') {
+                dfsCall(i, 0, board, delRow, delCol);
+            }
+            // Finding element in the last column
+            if (board[i][col - 1] == 'O') {
+                dfsCall(i, col - 1, board, delRow, delCol);
+            }
+        }
+
+        // Flipping the cells
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (board[i][j] == 'O') {
+                    board[i][j] = 'X';
+                } else if (board[i][j] == '1') {
+                    board[i][j] = 'O';
+                }
+            }
+        }
+    }
+
+    public void dfsCall(int i, int j, char[][] board, int[] delRow, int[] delCol) {
+        board[i][j] = '1';  // We will mark the cell as visited
+        int row = board.length;
+        int col = board[0].length;
+
+        // Finding the elements that are adjacent
+        for (int a = 0; a < 4; a++) {
+            int x = i + delRow[a];
+            int y = j + delCol[a];
+
+            if (x >= 0 && x < row && y >= 0 && y < col && board[x][y] == 'O') {
+                dfsCall(x, y, board, delRow, delCol);
+            }
+        }
+    }
+}
