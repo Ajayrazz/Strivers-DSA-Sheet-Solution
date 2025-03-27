@@ -1,0 +1,68 @@
+class Solution {
+    public void solve(char[][] board) {
+        //Base Case
+        if(board == null || board.length == 0){
+            return;
+        }
+
+        int row = board.length;
+        int col = board[0].length;
+
+        //initialize the direction
+        int[] delRow = {-1, 0, 1, 0};
+        int[] delCol = {0, 1, 0, -1};
+
+        //check top and bottom rows
+        for(int j = 0; j < col; j++){
+            //check for top
+            if(board[0][j] == 'O'){
+                dfs(0, j, board, delRow, delCol);
+            }
+            //check for bottom row
+            if(board[row - 1][j] == 'O'){
+                dfs(row - 1, j, board, delRow, delCol);
+            }
+        }
+
+        //check for left and right column
+        for(int i = 0; i < row; i++){
+            //check for left row
+            if(board[i][0] == 'O'){
+                dfs(i, 0, board, delRow, delCol);
+            }
+            //check the right column
+            if(board[i][col - 1] == 'O'){
+                dfs(i, col - 1, board, delRow, delCol);
+            }
+        }
+
+        //Flip the rest element
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                if(board[i][j] == 'O'){
+                    board[i][j] = 'X';
+                }
+                else if(board[i][j] == '1'){
+                    board[i][j] = 'O';
+                }
+            }
+        }
+    }
+
+    private void dfs(int i, int j, char[][] board, int[] delRow, int[] delCol){
+        //make the changes
+        board[i][j] = '1';
+        int row = board.length;
+        int col = board[0].length;
+
+        for(int a = 0; a < 4; a++){
+            int x = i + delRow[a];
+            int y = j + delCol[a];
+
+            //check the case
+            if(x >= 0 && x < row && y >= 0 && y < col && board[x][y] == 'O'){
+                dfs(x, y, board, delRow, delCol);
+            }
+        }
+    }
+}
