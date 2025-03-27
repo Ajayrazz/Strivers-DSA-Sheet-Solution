@@ -1,0 +1,39 @@
+class Solution {
+    // Function to return list containing vertices in Topological order.
+    static ArrayList<Integer> topologicalSort(ArrayList<ArrayList<Integer>> adj) {
+        // Your code here
+        int V = adj.size();
+        int[] visited = new int[V];
+        Stack<Integer> stack = new Stack<>();
+        
+        for(int i = 0; i < V; i++){
+            if(visited[i] == 0){
+                //call dfs
+                dfs(i, visited, stack, adj);
+            }
+        }
+        
+        ArrayList<Integer> result = new ArrayList<>();
+        int idx = 0;
+        while(!stack.isEmpty()){
+            result.add(stack.peek());
+            stack.pop();
+        }
+        
+        return result;
+    }
+    
+    //function for stack
+    private static void dfs(int node, int[] visited, Stack<Integer> stack, ArrayList<ArrayList<Integer>> adj){
+        //mark visited
+        visited[node] = 1;
+        
+        for(int it : adj.get(node)){
+            if(visited[it] == 0){
+                dfs(it, visited, stack, adj);
+            }
+        }
+        
+        stack.push(node);
+    }
+}
