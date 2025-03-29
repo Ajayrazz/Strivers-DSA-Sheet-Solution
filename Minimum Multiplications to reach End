@@ -1,0 +1,52 @@
+class Pair {
+    int value;
+    int steps;
+    
+    public Pair(int value, int steps) {
+        this.value = value;
+        this.steps = steps;
+    }
+}
+
+class Solution {
+    static int MOD = 100000;
+    
+    int minimumMultiplications(int[] arr, int start, int end) {
+        // Your code here
+        // Create a distance array to store minimum steps for each possible value
+        int[] dist = new int[MOD];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        
+        // Priority queue will store Pair objects (current value, steps taken)
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> a.steps - b.steps);
+        
+        // Initialize with the start value
+        dist[start] = 0;
+        pq.offer(new Pair(start, 0));
+        
+        while (!pq.isEmpty()) {
+            Pair current = pq.poll();
+            int currentVal = current.value;
+            int steps = current.steps;
+            
+            // If we've reached the end value
+            if (currentVal == end) {
+                return steps;
+            }
+            
+            // Try multiplying with each number in the array
+            for (int num : arr) {
+                int newVal = (currentVal * num) % MOD;
+                
+                // If we found a shorter path to this new value
+                if (steps + 1 < dist[newVal]) {
+                    dist[newVal] = steps + 1;
+                    pq.offer(new Pair(newVal, dist[newVal]));
+                }
+            }
+        }
+        
+        // If we couldn't reach the end value
+        return -1;
+    }
+}
