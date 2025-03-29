@@ -1,0 +1,56 @@
+class Tuple {
+    int first, second, third;
+    public Tuple(int first, int second, int third){
+        this.first = first;
+        this.second = second;
+        this.third = third;
+    }
+}
+
+class Solution {
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        int n = grid.length;
+        if(grid[0][0] == 1 || grid[n - 1][n - 1] == 1){
+            return -1;
+        }
+
+        int[][] dist = new int[n][n];
+        for(int i = 0; i < n; i++){
+            Arrays.fill(dist[i], Integer.MAX_VALUE);
+        }
+
+        dist[0][0] = 0;
+        PriorityQueue<Tuple> pq = new PriorityQueue<>((a, b) -> a.first - b.first);
+        pq.offer(new Tuple(0, 0, 0));
+
+        int[] dr = {-1, -1, -1, 0, 1, 1, 1, 0};
+        int[] dc = {-1, 0, 1, 1, 1, 0, -1, -1};
+
+        while(!pq.isEmpty()){
+            Tuple t = pq.poll();
+            int dis = t.first;
+            int row = t.second;
+            int col = t.third;
+
+            if(dist[row][col] != Integer.MAX_VALUE){
+                for(int i = 0; i < 8; i++){
+                    int nRow = row + dr[i];
+                    int nCol = col + dc[i];
+
+                    if(nRow >= 0 && nRow < n && nCol >= 0 && nCol < n && grid[nRow][nCol] == 0){
+                        if(dis + 1 < dist[nRow][nCol]){
+                            dist[nRow][nCol] = dis + 1;
+                            pq.offer(new Tuple(dist[nRow][nCol], nRow, nCol));
+                        }
+                    }
+                }
+            }
+        }
+
+        if(dist[n - 1][n - 1] == Integer.MAX_VALUE){
+            return -1;
+        }
+
+        return dist[n - 1][n - 1] + 1;
+    }
+}
