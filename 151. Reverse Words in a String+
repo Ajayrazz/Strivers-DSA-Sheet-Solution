@@ -1,0 +1,33 @@
+class Solution {
+    public String reverseWords(String s) {
+        //Trim the left and right white-space
+        s.trim();
+        //convert the String s in to array
+        String[] str_word = s.split(" ");
+        //reverse the element of the String array str_word
+        int left = 0;
+        int right = str_word.length - 1;
+        while(left < right){
+            String temp = str_word[left];
+            str_word[left] = str_word[right];
+            str_word[right] = temp;
+            left++;
+            right--;
+        }
+
+        //StringBuilder -> to store the element of the str_word
+        StringBuilder sb = new StringBuilder();
+        for(String word : str_word){
+            //check whether word is empty or not
+            if(!word.isEmpty()){
+                //add white space between word
+                if(sb.length() > 0){
+                    sb.append(" ");
+                }
+                sb.append(word);
+            }
+        }
+
+        return sb.toString();
+    }
+}
