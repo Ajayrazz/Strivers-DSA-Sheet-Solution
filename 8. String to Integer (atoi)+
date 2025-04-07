@@ -1,0 +1,32 @@
+class Solution {
+    public int myAtoi(String s) {
+        int max = Integer.MAX_VALUE;
+        int min = Integer.MIN_VALUE;
+        int idx = 0;
+        int result = 0;
+        int sign = 1;
+
+        //Step 1 -> remove the white space
+        while(idx < s.length() && s.charAt(idx) == ' '){
+            idx++;
+        }
+
+        //step 2 -> identify the sign
+        if(idx < s.length() && (s.charAt(idx) == '-' || s.charAt(idx) == '+')){
+            sign = s.charAt(idx) == '-' ? -1 : 1;
+            idx++;
+        }
+
+        //step 3 -> iterate the character of the string s
+        while(idx < s.length() && Character.isDigit(s.charAt(idx))){
+            int digit = s.charAt(idx) - '0';
+            while(result > (max - digit) / 10){
+                return sign == -1 ? min : max;
+            }
+            result = result * 10 + digit;
+            idx++;
+        }
+
+        return result * sign;
+    }
+}
