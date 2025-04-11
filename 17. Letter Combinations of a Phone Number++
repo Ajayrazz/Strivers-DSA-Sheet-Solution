@@ -1,0 +1,42 @@
+class Solution {
+    //Map to store Character and String
+    public Map<Character, String> map = Map.of(
+        '2', "abc",
+        '3', "def",
+        '4', "ghi",
+        '5', "jkl",
+        '6', "mno",
+        '7', "pqrs",
+        '8', "tuv",
+        '9', "wxyz"
+    );
+    public List<String> letterCombinations(String digits) {
+        //Base Case
+        if(digits.length() == 0){
+            return new ArrayList<>();
+        }
+        
+        List<String> result = new ArrayList<>();
+        Helper("", 0, digits, result);
+        return result;  
+    }
+
+    //Helper function for generating the letter combination of phone number
+    private void Helper(String current, int idx, String digits, List<String> result){
+        if(current.length() == digits.length()){
+            result.add(current);
+            return;
+        }
+        else if(idx >= digits.length()){
+            return;
+        }
+        else {
+            String digit = map.get(digits.charAt(idx));
+            //split digit into character array
+            for(char ch : digit.toCharArray()){
+                //recall the helper function
+                Helper(current + ch, idx + 1, digits, result);
+            }
+        }
+    }
+}
