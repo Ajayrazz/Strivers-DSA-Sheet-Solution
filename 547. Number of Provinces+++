@@ -1,0 +1,27 @@
+class Solution {
+    public int findCircleNum(int[][] isConnected) {
+        int V = isConnected.length;
+        boolean[] visited = new boolean[V];
+        int total_provinces = 0;
+        for(int i = 0; i < V; i++){
+            if(!visited[i]){
+                total_provinces += 1;
+                //call the dfs
+                dfs(i, isConnected, visited);
+            }
+        }
+        return total_provinces;
+    }
+
+    //function for depth first search
+    private void dfs(int node, int[][] isConnected, boolean[] visited){
+        //visit
+        visited[node] = true;
+        for(int i = 0; i < isConnected.length; i++){
+            if(isConnected[node][i] ==  1 && !visited[i]){
+                //recall the function
+                dfs(i, isConnected, visited);
+            }
+        }
+    }
+}
