@@ -1,0 +1,46 @@
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int n = nums.length;
+        int tot_sum = 0;
+        for(int num : nums){
+            tot_sum += num;
+        }
+
+        if(tot_sum % 2 != 0){
+            return false;
+        }
+        else {
+            int target = tot_sum / 2;
+            int[][] dp = new int[n][target + 1];
+            //fill the dp with -1
+            for(int[] row : dp){
+                Arrays.fill(row , -1);
+            }
+
+            return subsetSumUtil(n - 1, target, dp, nums);
+        }
+    }
+
+    //function to check for patition 
+    private boolean subsetSumUtil(int idx, int target, int[][] dp, int[] nums){
+        //case 1
+        if(target == 0) return true;
+        //case 2
+        if(idx == 0) return nums[0] == target;
+        //case 3
+        if(dp[idx][target] != -1){
+            return dp[idx][target] == 0 ? false : true;
+        }
+
+        boolean notTaken = subsetSumUtil(idx - 1, target, dp, nums);
+        boolean taken = false;
+
+        if(nums[idx] <= target){
+            taken = subsetSumUtil(idx - 1, target - nums[idx], dp, nums);
+        }
+
+        //update the dp
+        dp[idx][target] = taken || notTaken ? 1 : 0;
+        return taken || notTaken;
+    }
+}
