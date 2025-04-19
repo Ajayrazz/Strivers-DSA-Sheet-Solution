@@ -1,0 +1,41 @@
+class Solution {
+    public List<List<String>> partition(String s) {
+        //Base Case
+        if(s.length() == 0) return new ArrayList<>();
+        List<List<String>> result = new ArrayList<>();
+        //call the helper function
+        helper(s, result, new ArrayList<>(), 0);
+        return result;
+    }
+
+    //Helper function
+    private void helper(String s, List<List<String>> result, List<String> current, int idx){
+        //Base Case
+        if(idx == s.length()){
+            result.add(new ArrayList<>(current));
+            return;
+        }
+
+        for(int i = idx; i < s.length(); i++){
+            if(isPalindrome(s, idx, i)){
+                current.add(s.substring(idx, i + 1));
+                //recall the function
+                helper(s, result, current, i + 1);
+                //
+                current.remove(current.size() - 1);
+            }
+        }
+    }
+
+    //function for checking palindrome
+    private boolean isPalindrome(String s, int i, int j){
+        while(i < j){
+            if(s.charAt(i) != s.charAt(j)){
+                return false;
+            }
+            i++;
+            j--;
+        }
+        return true;
+    }
+}
