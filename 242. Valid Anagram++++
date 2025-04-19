@@ -1,0 +1,33 @@
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        //base case
+        if(s.length() != t.length()){
+            return false;
+        }
+
+        //put the character of s to map
+        Map<Character, Integer> map = new HashMap<>();
+        for(char ch : s.toCharArray()){
+            if(map.containsKey(ch)){
+                map.put(ch, map.get(ch) + 1);
+            }
+            else {
+                map.put(ch, 1);
+            }
+        }
+
+        //iterate character of t
+        for(char ch : t.toCharArray()){
+            if(map.containsKey(ch)){
+                if(map.get(ch) == 1){
+                    map.remove(ch);
+                }
+                else {
+                    map.put(ch, map.get(ch) - 1);
+                }
+            }
+        }
+
+        return map.isEmpty();
+    }
+}
