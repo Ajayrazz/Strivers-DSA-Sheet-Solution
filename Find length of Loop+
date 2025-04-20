@@ -1,0 +1,52 @@
+/****************************************************************
+
+ Following is the class structure of the Node class:
+
+ class Node {
+     public int data;
+     public Node next;
+
+     Node()
+     {
+         this.data = 0;
+         this.next = null;
+     }
+
+     Node(int data)
+     {
+         this.data = data;
+         this.next = null;
+     }
+
+     Node(int data, Node next)
+     {
+         this.data = data;
+         this.next = next;
+     }
+ };
+
+ *****************************************************************/
+
+public class Solution
+{
+    public static int lengthOfLoop(Node head) {
+        // Write your code here
+        if(head == null) return 0;
+        Node slow = head;
+        Node fast = head;
+        while(fast != null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next.next;
+            if(slow == fast){
+                int count = 1;
+                Node temp = slow.next;
+                while(temp != slow){
+                    temp = temp.next;
+                    count += 1;
+                }
+                return count;
+            }
+        }
+        return 0;
+    }
+}
