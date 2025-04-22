@@ -1,0 +1,49 @@
+class Solution {
+    public boolean exist(char[][] board, String word) {
+        int row = board.length;
+        int col = board[0].length;
+        boolean[][] visited = new boolean[row][col];
+        boolean result = false;
+
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                if(board[i][j] == word.charAt(0)){
+                    result = Helper(0, i, j, row, col, board, word, visited);
+
+                    if(result){
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    //Helper function
+    private boolean Helper(int idx, int i, int j, int row, int col, char[][] board, String word, boolean[][] visited){
+        //base case
+        if(idx >= word.length()){
+            return true;
+        }
+
+        //case 1
+        if(i < 0 || j < 0 || i >= row || j >= col || board[i][j] != word.charAt(idx) || visited[i][j]){
+            return false;
+        }
+
+        //Make the changes
+        visited[i][j] = true;
+        //case 3
+        if(Helper(idx + 1, i + 1, j, row, col, board, word, visited) ||
+            Helper(idx + 1, i - 1, j, row, col, board, word, visited) ||
+            Helper(idx + 1, i, j - 1, row, col, board, word, visited) ||
+            Helper(idx + 1, i, j + 1, row, col, board, word, visited)){
+                return true;
+        }
+
+        //revert the changes
+        visited[i][j] = false;
+        return false;
+    }
+}
