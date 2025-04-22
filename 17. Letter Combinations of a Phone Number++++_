@@ -1,0 +1,42 @@
+class Solution {
+    Map<Character, String> map = Map.of(
+        '2',"abc",
+        '3',"def",
+        '4',"ghi",
+        '5',"jkl",
+        '6',"mno",
+        '7',"pqrs",
+        '8',"tuv",
+        '9',"wxyz"
+    );
+    public List<String> letterCombinations(String digits) {
+        //base case
+        if(digits.length() == 0){
+            return new ArrayList<>();
+        }
+
+        List<String> result = new ArrayList<>();
+        helper(0, "", digits, result);
+        return result;
+    }
+
+    //Helper function
+    private void helper(int idx, String current, String digits, List<String> result){
+        //base case
+        if(current.length() == digits.length()){
+            result.add(current);
+            return;
+        }
+
+        if(idx >= digits.length()){
+            return;
+        }
+        else {
+            String digit = map.get(digits.charAt(idx));
+            //split digit to character array
+            for(char ch : digit.toCharArray()){
+                helper(idx + 1, current + ch, digits, result);
+            }
+        }
+    }
+}
