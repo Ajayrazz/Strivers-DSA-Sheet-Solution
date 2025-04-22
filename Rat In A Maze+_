@@ -1,0 +1,46 @@
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+    public static ArrayList < String > findSum(int[][] arr, int n) {
+        // Write your code here.
+        int[][] visited = new int[n][n];
+        for(int[] vis : visited){
+            Arrays.fill(vis, 0);
+        }
+
+        int[] di = {1, 0, 0, -1};
+        int[] dj = {0, -1, 1, 0};
+        ArrayList<String> result = new ArrayList<>();
+        //case 1
+        if(arr[0][0] == 1){
+            //call the helper function
+            helper(0, 0, n, arr, visited, "", result, di, dj);
+        }
+        return result;
+    }
+
+    //Helper Function
+    private static void helper(int i, int j, int n, int[][] arr, int[][] visited, String move, ArrayList<String> result, int[] di, int[] dj){
+        //Base Case
+        if(i == n - 1 && j == n - 1){
+            result.add(move);
+            return;
+        }
+
+        String dir = "DLRU";
+        for(int idx = 0; idx < 4; idx++){
+            int nextI = i + di[idx];
+            int nextJ = j + dj[idx];
+
+            //case 2
+            if(nextI >= 0 && nextJ >= 0 && nextI < n && nextJ < n && visited[nextI][nextJ] == 0 && arr[nextI][nextJ] == 1){
+                //make the changes
+                visited[i][j] = 1;
+                //recall the function
+                helper(nextI, nextJ, n, arr, visited, move + dir.charAt(idx), result, di, dj);
+                //revert the changes
+                visited[i][j] = 0;
+            }
+        }
+    }
+}
