@@ -1,0 +1,48 @@
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int total_sum = 0;
+        for(int num : nums){
+            total_sum += num;
+        }
+
+        //case 1
+        if(total_sum % 2 == 1){
+            return false;
+        }
+
+        int target = total_sum / 2;
+
+        int[][] dp = new int[nums.length][target + 1];
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return subsetSumUtil(nums.length - 1, target, nums, dp);
+    }
+
+    //Function For SubsetSumUtil
+    private boolean subsetSumUtil(int idx, int target, int[] arr, int[][] dp){
+        if(target == 0){
+            return false;
+        }
+
+        if(idx == 0){
+            return arr[idx] == target;
+        }
+
+        if(dp[idx][target] != -1){
+            return dp[idx][target] == 0 ? false : true;
+        }
+
+        boolean notTaken = subsetSumUtil(idx - 1, target, arr, dp);
+        boolean taken = false;
+
+        if(arr[idx] <= target){
+            taken = subsetSumUtil(idx - 1, target - arr[idx], arr, dp);
+        }
+
+        dp[idx][target] = taken || notTaken ? 1 : 0;
+
+        return taken || notTaken;
+    }
+}
