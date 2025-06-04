@@ -1,0 +1,38 @@
+import java.util.Arrays;
+
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        int n = nums.length;
+        //make a dp array
+        int[][] dp = new int[n][n + 1];
+        //initialize the dp
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return lengthOfLISUtil(nums, n, 0, -1, dp);
+    }
+
+    //Helper Function
+    public int lengthOfLISUtil(int[] nums, int n, int idx, int prev_index, int[][] dp){
+        //base case
+        if(idx == n) return 0;
+
+        //case 1 - memoization check (fixed this line)
+        if(prev_index != -1 && dp[idx][prev_index + 1] != -1){
+            return dp[idx][prev_index + 1];
+        }
+
+        int notTake = 0 + lengthOfLISUtil(nums, n, idx + 1, prev_index, dp);
+        int take = 0;
+
+        if(prev_index == -1 || nums[idx] > nums[prev_index]){
+            take = 1 + lengthOfLISUtil(nums, n, idx + 1, idx, dp);
+        }
+
+        //update the dp array
+        dp[idx][prev_index + 1] = Math.max(take, notTake);
+
+        return dp[idx][prev_index + 1];
+    }
+}
