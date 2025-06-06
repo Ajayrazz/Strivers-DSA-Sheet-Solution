@@ -1,0 +1,54 @@
+import java.util.* ;
+import java.io.*; 
+
+class Pair {
+    TreeNode<Integer> node;
+    int row;
+    int col;
+
+    Pair(TreeNode<Integer> node, int row, int col){
+        this.node = node;
+        this.row = row;
+        this.col = col;
+    }
+}
+
+public class Solution 
+{
+    public static ArrayList<Integer> verticalOrderTraversal(TreeNode<Integer> root) 
+    {
+        Queue<Pair> queue = new LinkedList<>();
+        TreeMap<Integer, TreeMap<Integer, List<Integer>>> map = new TreeMap<>();
+        queue.offer(new Pair(root, 0, 0));
+
+        while(!queue.isEmpty()){
+            for(int i = queue.size(); i > 0; i--){
+                Pair p = queue.poll();
+                TreeNode<Integer> currNode = p.node;
+                int x = p.row;
+                int y = p.col;
+
+                map.putIfAbsent(x, new TreeMap<>());
+                map.get(x).putIfAbsent(y, new ArrayList<>());
+                map.get(x).get(y).add(currNode.data);
+
+                if(currNode.left != null){
+                    queue.offer(new Pair(currNode.left, x - 1, y + 1));
+                }
+
+                if(currNode.right != null){
+                    queue.offer(new Pair(currNode.right, x + 1, y + 1));
+                }
+            }
+        }
+
+        ArrayList<Integer> result = new ArrayList<>();
+        for(TreeMap<Integer, List<Integer>> key : map.values()){
+            for(List<Integer> nodes : key.values()){
+                result.addAll(nodes); // preserve insertion order
+            }
+        }
+
+        return result;
+    }
+}
