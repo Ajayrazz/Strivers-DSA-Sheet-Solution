@@ -1,0 +1,44 @@
+import java.util.*;
+
+class Pair {
+    TreeNode node;
+    int hd;
+
+    Pair(TreeNode node, int hd) {
+        this.node = node;
+        this.hd = hd;
+    }
+}
+
+public class Solution {
+
+    public static List<Integer> bottomView(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) return result;
+
+        Map<Integer, Integer> map = new TreeMap<>();
+        Queue<Pair> queue = new LinkedList<>();
+
+        queue.add(new Pair(root, 0));
+
+        while (!queue.isEmpty()) {
+            Pair curr = queue.poll();
+            TreeNode node = curr.node;
+            int line = curr.hd;
+
+            // Always update for bottom view
+            map.put(line, node.val); // ? Use node.val instead of node.data
+
+            if (node.left != null) {
+                queue.add(new Pair(node.left, line - 1));
+            }
+
+            if (node.right != null) {
+                queue.add(new Pair(node.right, line + 1));
+            }
+        }
+
+        result.addAll(map.values());
+        return result;
+    }
+}
