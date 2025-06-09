@@ -1,0 +1,79 @@
+/****************************************************************
+
+ Following is the class structure of the Node class:
+
+ class Node {
+     public int data;
+     public Node next;
+     public Node child;
+
+     Node()
+     {
+         this.data = 0;
+         this.next = null;
+         this.child = null;
+     }
+     Node(int data)
+     {
+         this.data = data;
+         this.next = null;
+         this.child = null;
+     }
+     Node(int data, Node next, Node child)
+     {
+         this.data = data;
+         this.next = next;
+         this.child = child;
+     }
+ }
+
+ *****************************************************************/
+
+public class Solution {
+    public static Node flattenLinkedList(Node head) {
+        //Write your code here
+        //base case
+        if(head == null || head.next == null){
+            return head;
+        }
+
+        Node mergedHead = flattenLinkedList(head.next);
+        head = merge(head, mergedHead);
+
+        return head;
+    }
+
+    //Function To Merge The Two LinkedList
+    public static Node merge(Node list1, Node list2){
+        Node dummyNode = new Node(-1);
+        Node result = dummyNode;
+
+        while(list1 != null && list2 != null){
+            if(list1.data < list2.data){
+                result.child = list1;
+                result = list1;
+                list1 = list1.child;
+            }
+            else {
+                result.child = list2;
+                result = list2;
+                list2 = list2.child;
+            }
+
+            result.next = null;
+        }
+
+        if(list1 != null){
+            result.child = list1;
+        }
+        else {
+            result.child = list2;
+        }
+
+        if(dummyNode.child != null){
+            dummyNode.child.next = null;
+        }
+
+        return dummyNode.child;
+    }
+}
