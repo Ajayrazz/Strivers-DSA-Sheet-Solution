@@ -1,0 +1,45 @@
+class Solution {
+    public int minCut(String s) {
+        int n = s.length();
+        int[] dp = new int[n];
+        Arrays.fill(dp, -1);
+
+        return Helper(0, n, s, dp) - 1;
+    }
+
+    //Helper Function For Palindrome Partitioning
+    public int Helper(int i, int n, String str, int[] dp){
+        //base case
+        if(i == n){
+            return 0;
+        }
+
+        if(dp[i] != -1){
+            return dp[i];
+        }
+
+        int minCost = Integer.MAX_VALUE;
+        for(int j = i; j < n; j++){
+            if(isPalindrome(i, j, str)){
+                int cost = 1 + Helper(j + 1, n, str, dp);
+                minCost = Math.min(minCost, cost);
+            }
+        }
+
+        //update the dp and return
+        return dp[i] = minCost;
+    }
+
+    //IsPalindrome Function
+    public boolean isPalindrome(int i, int j, String str){
+        while(i < j){
+            if(str.charAt(i) != str.charAt(j)){
+                return false;
+            }
+            i++;
+            j--;
+        }
+
+        return true;
+    }
+}
