@@ -1,0 +1,31 @@
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        //base case
+        if(n == 0){
+            return new ArrayList<>();
+        }
+
+        List<String> result = new ArrayList<>();
+        //call the helper function
+        helper(0, 0, n, "", result);
+
+        return result;
+    }
+
+    //Helper Function For Generating The Parenthesis
+    public void helper(int openP, int closeP, int n, String current, List<String> result){
+        //base case
+        if(current.length() == 2 * n){
+            result.add(current);
+            return;
+        }
+
+        if(openP < n){
+            helper(openP + 1, closeP, n, current + '(', result);
+        }
+
+        if(closeP < openP){
+            helper(openP, closeP + 1, n, current + ')', result);
+        }
+    }
+}
