@@ -1,0 +1,70 @@
+import java.util.* ;
+import java.io.*; 
+
+/*************************************************************
+    
+    Following is the Binary Tree node structure:
+
+    class binaryTreeNode {
+
+        int data;
+        binaryTreeNode left;
+        binaryTreeNode right;
+
+        binaryTreeNode(int data) {
+            this.data = data;
+            left = null;
+            right = null;
+        }
+    }
+
+*************************************************************/
+
+public class Solution {
+
+    static binaryTreeNode pre = null, suc = null;
+
+    public static ArrayList<Integer> findPreSuc(binaryTreeNode root, int key) {
+        pre = null;
+        suc = null;
+
+        findPreSucHelp(root, key);
+
+        ArrayList<Integer> result = new ArrayList<>();
+
+        result.add(pre != null ? pre.data : -1);
+        result.add(suc != null ? suc.data : -1);
+
+        return result;
+    }
+
+    private static void findPreSucHelp(binaryTreeNode root, int key) {
+        if (root == null) return;
+
+        if (root.data == key) {
+            // Predecessor: max value in left subtree
+            if (root.left != null) {
+                binaryTreeNode temp = root.left;
+                while (temp.right != null) {
+                    temp = temp.right;
+                }
+                pre = temp;
+            }
+
+            // Successor: min value in right subtree
+            if (root.right != null) {
+                binaryTreeNode temp = root.right;
+                while (temp.left != null) {
+                    temp = temp.left;
+                }
+                suc = temp;
+            }
+        } else if (root.data > key) {
+            suc = root;
+            findPreSucHelp(root.left, key);
+        } else {
+            pre = root;
+            findPreSucHelp(root.right, key);
+        }
+    }
+}
