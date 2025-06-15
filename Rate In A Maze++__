@@ -1,0 +1,50 @@
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+    public static ArrayList < String > findSum(int[][] arr, int n) {
+        // Write your code here.
+        int[][] visited = new int[n][n];
+        for(int[] row : visited){
+            Arrays.fill(row, 0);
+        }
+        
+        //Down - Left - Right - Up
+        int[] di = {1, 0, 0, -1};
+        int[] dj = {0, -1, 1, 0};
+
+        ArrayList<String> result = new ArrayList<>();
+
+        if(arr[0][0] == 1){
+            //Call The Helper Function
+            Helper(0, 0, n, arr, visited, "", di, dj, result);
+        }
+
+        //return
+        return result;
+    }
+
+    //Helper Function To Find The Path In A Maze
+    public static void Helper(int i, int j, int n, int[][] arr, int[][] visited, String move, int[] di, int[] dj, ArrayList<String> result){
+        //base case
+        if(i == n - 1 && j == n - 1){
+            result.add(move);
+            return;
+        }
+
+        String direction = "DLRU";
+
+        for(int idx = 0; idx < 4; idx++){
+            int nextI = i + di[idx];
+            int nextJ = j + dj[idx];
+
+            if(nextI >= 0 && nextI < n && nextJ >= 0 && nextJ < n && arr[nextI][nextJ] == 1 && visited[nextI][nextJ] == 0){
+                //make the changes and visit
+                visited[i][j] = 1;
+                //recall the function
+                Helper(nextI, nextJ, n, arr, visited, move + direction.charAt(idx), di, dj, result);
+                //revert the changes
+                visited[i][j] = 0;
+            }
+        }
+    }
+}
