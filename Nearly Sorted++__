@@ -1,0 +1,29 @@
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+  public static int[] nearlySorted(int[] array, int n, int k) {
+      // Write your code here.
+      // Min Heap to store k+1 elements
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        
+        int index = 0; // index to place sorted elements in array
+
+        // Step 1: Push first k+1 elements to the heap
+        for (int i = 0; i <= Math.min(k, n - 1); i++) {
+            minHeap.add(array[i]);
+        }
+
+        // Step 2: Process remaining elements
+        for (int i = k + 1; i < n; i++) {
+            array[index++] = minHeap.poll(); // place the smallest element
+            minHeap.add(array[i]);           // add current element to heap
+        }
+
+        // Step 3: Extract remaining elements from heap
+        while (!minHeap.isEmpty()) {
+            array[index++] = minHeap.poll();
+        }
+
+        return array;
+  }
+}
