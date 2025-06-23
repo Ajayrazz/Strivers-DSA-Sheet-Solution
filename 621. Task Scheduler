@@ -1,0 +1,42 @@
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        // Step 1: Count frequencies of each task
+        int[] freq = new int[26];
+        for (char task : tasks) {
+            freq[task - 'A']++;
+        }
+
+        // Step 2: Use max heap to store task frequencies (max at top)
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        for (int f : freq) {
+            if (f > 0) {
+                maxHeap.offer(f);
+            }
+        }
+
+        // Step 3: Queue to store tasks that are in cooling state
+        Queue<int[]> cooldownQueue = new LinkedList<>();
+
+        int time = 0;
+
+        // Step 4: Simulate each time unit
+        while (!maxHeap.isEmpty() || !cooldownQueue.isEmpty()) {
+            time++;
+
+            // Process task from heap if available
+            if (!maxHeap.isEmpty()) {
+                int current = maxHeap.poll() - 1; // Execute it
+                if (current > 0) {
+                    cooldownQueue.offer(new int[]{current, time + n}); // Put back after cooling
+                }
+            }
+
+            // Re-add cooled-down tasks to heap
+            if (!cooldownQueue.isEmpty() && cooldownQueue.peek()[1] == time) {
+                maxHeap.offer(cooldownQueue.poll()[0]);
+            }
+        }
+
+        return time;
+    }
+}
