@@ -1,0 +1,41 @@
+class Solution {
+    //Map to store the character and string
+    Map<Character, String> map = Map.of(
+        '2',"abc",
+        '3',"def",
+        '4',"ghi",
+        '5',"jkl",
+        '6',"mno",
+        '7',"pqrs",
+        '8',"tuv",
+        '9',"wxyz"
+    );
+
+    public List<String> letterCombinations(String digits) {
+        //base case
+        if(digits.length() == 0){
+            return new ArrayList<>();
+        }
+
+        List<String> result = new ArrayList<>();
+        Helper(0, digits, result, "");
+        return result; 
+    }
+
+    //Helper function for making letter combination
+    public void Helper(int index, String digits, List<String> result, String current){
+        //base case
+        if(current.length() == digits.length()){
+            result.add(current);
+        }
+        else if(index >= digits.length()){
+            return;
+        }
+        else {
+            String digit = map.get(digits.charAt(index));
+            for(char ch : digit.toCharArray()){
+                Helper(index + 1, digits, result, current + ch);
+            }
+        }
+    }
+}
