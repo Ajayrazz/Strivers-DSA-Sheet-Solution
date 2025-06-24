@@ -1,0 +1,73 @@
+import java.util.*;
+
+class Twitter {
+    private static class Tweet {
+        int tweetId;
+        int time;
+
+        public Tweet(int tweetId, int time) {
+            this.tweetId = tweetId;
+            this.time = time;
+        }
+    }
+
+    // Global timestamp to keep track of tweet order
+    private int timestamp;
+
+    // Map from user to their tweets
+    private Map<Integer, List<Tweet>> userTweets;
+
+    // Map from user to set of users they follow
+    private Map<Integer, Set<Integer>> userFollows;
+
+    public Twitter() {
+        timestamp = 0;
+        userTweets = new HashMap<>();
+        userFollows = new HashMap<>();
+    }
+
+    public void postTweet(int userId, int tweetId) {
+        userTweets.putIfAbsent(userId, new ArrayList<>());
+        userTweets.get(userId).add(new Tweet(tweetId, timestamp++));
+    }
+
+    public List<Integer> getNewsFeed(int userId) {
+        // Custom comparator to build a max heap based on timestamp
+        PriorityQueue<Tweet> maxHeap = new PriorityQueue<>((a, b) -> b.time - a.time);
+
+        // Include userId's own tweets
+        if (userTweets.containsKey(userId)) {
+            maxHeap.addAll(userTweets.get(userId));
+        }
+
+        // Include tweets from users the user is following
+        if (userFollows.containsKey(userId)) {
+            for (int followeeId : userFollows.get(userId)) {
+                if (userTweets.containsKey(followeeId)) {
+                    maxHeap.addAll(userTweets.get(followeeId));
+                }
+            }
+        }
+
+        List<Integer> result = new ArrayList<>();
+        int count = 0;
+        while (!maxHeap.isEmpty() && count < 10) {
+            result.add(maxHeap.poll().tweetId);
+            count++;
+        }
+
+        return result;
+    }
+
+    public void follow(int followerId, int followeeId) {
+        if (followerId == followeeId) return; // can't follow self
+        userFollows.putIfAbsent(followerId, new HashSet<>());
+        userFollows.get(followerId).add(followeeId);
+    }
+
+    public void unfollow(int followerId, int followeeId) {
+        if (userFollows.containsKey(followerId)) {
+            userFollows.get(followerId).remove(followeeId);
+        }
+    }
+}
