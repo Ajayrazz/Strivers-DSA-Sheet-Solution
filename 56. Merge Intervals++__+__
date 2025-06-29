@@ -1,0 +1,30 @@
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        if (intervals.length <= 1) return intervals;
+
+        // Step 1: Sort intervals by starting time
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+
+        ArrayList<int[]> result = new ArrayList<>();
+        int i = 0;
+        int n = intervals.length;
+
+        // Step 2: Use while loop to merge intervals
+        while (i < n) {
+            int start = intervals[i][0];
+            int end = intervals[i][1];
+
+            // Merge with all overlapping intervals
+            while (i + 1 < n && intervals[i + 1][0] <= end) {
+                i++;
+                end = Math.max(end, intervals[i][1]);
+            }
+
+            result.add(new int[]{start, end});
+            i++;
+        }
+
+        // Step 3: Convert result to array
+        return result.toArray(new int[result.size()][]);
+    }
+}
