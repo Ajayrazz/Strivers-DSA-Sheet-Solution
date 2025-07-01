@@ -1,0 +1,31 @@
+class Solution {
+    //function to find the number of possible unique path that robot can take to reach the bottom-right corner
+    public int uniquePathUtil(int i, int j, int m, int n, int[][] grid, int[][] dp){
+        //base case
+        if(i < 0 || j < 0 || i >= m || j >= n || grid[i][j] == 1){
+            return 0;
+        }
+
+        if(i == m - 1 && j == n - 1){
+            return dp[i][j] = 1;
+        }
+
+        if(dp[i][j] != 0){
+            return dp[i][j];
+        }
+
+        int right = uniquePathUtil(i, j + 1, m, n, grid, dp);
+        int down = uniquePathUtil(i + 1, j, m, n, grid, dp);
+
+        //update the dp and return it
+        return dp[i][j] = right + down;
+    }
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length;
+        int n = obstacleGrid[0].length;
+
+        int[][] dp = new int[m][n];
+        //call the function
+        return uniquePathUtil(0, 0, m, n, obstacleGrid, dp);
+    }
+}
