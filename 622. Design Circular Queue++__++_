@@ -1,0 +1,66 @@
+class MyCircularQueue {
+    public int[] queue;
+    int headIdx, count, size;
+    public MyCircularQueue(int k) {
+        queue = new int[k];
+        count = 0;
+        size = k;
+        headIdx = 0;
+    }
+    
+    public boolean enQueue(int value) {
+        if(isFull()){
+            return false;
+        }
+
+        queue[(headIdx + count) % size] = value;
+        count += 1;
+        return true;
+    }
+    
+    public boolean deQueue() {
+        if(isEmpty()){
+            return false;
+        }
+
+        //update the headIdx and count
+        headIdx = (headIdx + 1) % size;
+        count -= 1;
+        return true;
+    }
+    
+    public int Front() {
+        if(isEmpty()){
+            return -1;
+        }
+
+        return queue[headIdx];
+    }
+    
+    public int Rear() {
+        if(isEmpty()){
+            return -1;
+        }
+
+        return queue[(headIdx + count - 1) % size];
+    }
+    
+    public boolean isEmpty() {
+        return count == 0;
+    }
+    
+    public boolean isFull() {
+        return count == size;
+    }
+}
+
+/**
+ * Your MyCircularQueue object will be instantiated and called as such:
+ * MyCircularQueue obj = new MyCircularQueue(k);
+ * boolean param_1 = obj.enQueue(value);
+ * boolean param_2 = obj.deQueue();
+ * int param_3 = obj.Front();
+ * int param_4 = obj.Rear();
+ * boolean param_5 = obj.isEmpty();
+ * boolean param_6 = obj.isFull();
+ */
