@@ -1,0 +1,32 @@
+import java.util.*;
+public class Solution {
+    public static int unboundedKnapsack(int n, int w, int[] profit, int[] weight) {
+        // Write your code here.
+        int[][] dp = new int[n][w + 1];
+        //fill dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return unboundKnapsackUtil(n - 1, w, profit, weight, dp);
+    }
+
+    public static int unboundKnapsackUtil(int index, int target, int[] profit, int[] weight, int[][] dp){
+        //case 1
+        if(index == 0){
+            return (int)(target / weight[0]) * profit[0];
+        }
+
+        //case 2
+        if(dp[index][target] != -1) return dp[index][target];
+
+        int notTaken = unboundKnapsackUtil(index - 1, target, profit, weight, dp);
+        int taken = Integer.MIN_VALUE;
+        if(weight[index] <= target){
+            taken = profit[index] + unboundKnapsackUtil(index, target - weight[index], profit, weight, dp);
+        }
+
+        //update dp and return it
+        return dp[index][target] = Math.max(taken, notTaken);
+    }
+}
