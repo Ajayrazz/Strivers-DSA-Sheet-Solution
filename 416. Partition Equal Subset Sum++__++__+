@@ -1,0 +1,50 @@
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+        for(int num : nums){
+            sum += num;
+        }
+
+        //check whether we can partition nums into two equal subset or not
+        if(sum % 2 != 0) return false;
+
+        int target = sum / 2;
+        //create dp
+        int[][] dp = new int[nums.length][target + 1];
+        //fill the dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return subsetSumUtil(nums.length -1 , target, nums, dp);
+    }
+
+    public boolean subsetSumUtil(int index, int target, int[] nums, int[][] dp){
+        //case 1
+        if(target == 0){
+            return true;
+        }
+
+        //case 2
+        if(index == 0){
+            return nums[index] == target;
+        }
+
+        //case 3
+        if(dp[index][target] != -1){
+            return dp[index][target] == 0 ? false : true;
+        }
+
+        boolean notTaken = subsetSumUtil(index - 1, target, nums, dp);
+        boolean taken = false;
+
+        if(nums[index] <= target){
+            taken = subsetSumUtil(index - 1, target - nums[index], nums, dp);
+        }
+
+        //update dp
+        dp[index][target] = taken || notTaken ? 1 : 0;
+
+        return taken || notTaken;
+    }
+}
