@@ -1,0 +1,29 @@
+class Solution {
+    public int change(int amount, int[] coins) {
+        int[][] dp = new int[coins.length][amount + 1];
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return coinChangeUtil(coins.length - 1, amount, coins, dp);
+    }
+
+    //coinChangeUtil function
+    public int coinChangeUtil(int index, int target, int[] nums, int[][] dp){
+        if(index == 0){
+            if(target % nums[index] == 0) return 1;
+            return 0;
+        }
+
+        if(dp[index][target] != -1) return dp[index][target];
+
+        int notTaken = coinChangeUtil(index - 1, target, nums, dp);
+        int taken = 0;
+        if(nums[index] <= target){
+            taken = coinChangeUtil(index, target - nums[index], nums, dp);
+        }
+
+        //update dp and return it
+        return dp[index][target] = taken + notTaken;
+    }
+}
