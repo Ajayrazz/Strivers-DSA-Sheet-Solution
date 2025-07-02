@@ -1,0 +1,38 @@
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int[][] dp = new int[coins.length][amount + 1];
+        //fill dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        int ans = coinChangeUtil(coins.length - 1, amount, coins, dp);
+
+        if(ans >= (int) Math.pow(10, 9)){
+            return -1;
+        }
+
+        return ans;
+    }
+
+    //coinChangeUtil function
+    public int coinChangeUtil(int index, int target, int[] arr, int[][] dp){
+        //case 1
+        if(index == 0){
+            if(target % arr[0] == 0) return target / arr[0];
+            return (int) Math.pow(10, 9);
+        }
+
+        //case 2
+        if(dp[index][target] != -1) return dp[index][target];
+
+        int notTaken = coinChangeUtil(index - 1, target, arr, dp);
+        int taken = (int) Math.pow(10, 9);
+        if(arr[index] <= target){
+            taken = 1 + coinChangeUtil(index, target - arr[index], arr, dp);
+        }
+
+        //update the dp and return it
+        return dp[index][target] = Math.min(taken, notTaken);
+    }
+}
