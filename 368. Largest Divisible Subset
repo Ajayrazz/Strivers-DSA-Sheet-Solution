@@ -1,0 +1,59 @@
+class Solution {
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums); // Sort input to ensure divisibility order
+
+        int[][] dp = new int[n][n + 1];     // Memoization table
+        int[][] choice = new int[n][n + 1]; // Choice table: 1 = take, 0 = not take
+
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dp[i], -1);
+            Arrays.fill(choice[i], -1);
+        }
+
+        // Step 1: Fill dp and choice arrays
+        getAns(nums, n, 0, -1, dp, choice);
+
+        // Step 2: Reconstruct the subset using the choice table
+        List<Integer> subset = new ArrayList<>();
+        int ind = 0, prev_index = -1;
+
+        while (ind < n) {
+            if (choice[ind][prev_index + 1] == 1) {
+                subset.add(nums[ind]);
+                prev_index = ind;
+            }
+            ind++;
+        }
+
+        return subset;
+    }
+
+    // Recursive function to compute largest divisible subset
+    static int getAns(int[] arr, int n, int ind, int prev_index, int[][] dp, int[][] choice) {
+        if (ind == n) return 0;
+
+        if (dp[ind][prev_index + 1] != -1)
+            return dp[ind][prev_index + 1];
+
+        // Option 1: Don't take current element
+        int notTake = getAns(arr, n, ind + 1, prev_index, dp, choice);
+
+        int take = 0;
+        if (prev_index == -1 || arr[ind] % arr[prev_index] == 0) {
+            // Option 2: Take current element
+            take = 1 + getAns(arr, n, ind + 1, ind, dp, choice);
+        }
+
+        // Record decision in choice table
+        if (take > notTake) {
+            dp[ind][prev_index + 1] = take;
+            choice[ind][prev_index + 1] = 1; // take
+        } else {
+            dp[ind][prev_index + 1] = notTake;
+            choice[ind][prev_index + 1] = 0; // not take
+        }
+
+        return dp[ind][prev_index + 1];
+    }
+}
