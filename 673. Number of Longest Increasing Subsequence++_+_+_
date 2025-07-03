@@ -1,0 +1,52 @@
+class Pair {
+    int length;
+    int count;
+    Pair(int l, int c) {
+        this.length = l;
+        this.count = c;
+    }
+}
+
+class Solution {
+    public int findNumberOfLIS(int[] nums) {
+        int n = nums.length;
+        Pair[][] dp = new Pair[n][n + 1];
+        Pair result = getAns(nums, n, 0, -1, dp);
+
+        return result.count;
+    }
+
+    public Pair getAns(int[] arr, int n, int ind, int prev_index, Pair[][] dp) {
+        // Base condition
+        if (ind == n) {
+            return new Pair(0, 1); // length 0, 1 way (empty subsequence)
+        }
+
+        if (dp[ind][prev_index + 1] != null) {
+            return dp[ind][prev_index + 1];
+        }
+
+        // Not take
+        Pair notTake = getAns(arr, n, ind + 1, prev_index, dp);
+
+        // Take
+        Pair take = new Pair(0, 0);
+        if (prev_index == -1 || arr[ind] > arr[prev_index]) {
+            Pair next = getAns(arr, n, ind + 1, ind, dp);
+            take.length = 1 + next.length;
+            take.count = next.count;
+        }
+
+        // Compare both choices
+        if (take.length > notTake.length) {
+            dp[ind][prev_index + 1] = take;
+        } else if (take.length < notTake.length) {
+            dp[ind][prev_index + 1] = notTake;
+        } else {
+            // Equal length → combine count
+            dp[ind][prev_index + 1] = new Pair(take.length, take.count + notTake.count);
+        }
+
+        return dp[ind][prev_index + 1];
+    }
+}
