@@ -1,0 +1,34 @@
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+	public static ArrayList<String> binaryStrings(String str) {
+		// Write your code here.
+		ArrayList<String> result = new ArrayList<>();
+        generateStrings(str.toCharArray(), 0, result);
+
+		return result;
+	}
+
+	// Recursive function to generate all combinations
+    public static void generateStrings(char[] str, int index, ArrayList<String> result) {
+        if (index == str.length) {
+            result.add(new String(str));
+            return;
+        }
+
+        if (str[index] == '?') {
+            // Replace '?' with '0' and recurse
+            str[index] = '0';
+            generateStrings(str, index + 1, result);
+
+            // Replace '?' with '1' and recurse (backtrack the previous change)
+            str[index] = '1';
+            generateStrings(str, index + 1, result);
+
+            // Backtrack to original state for safety
+            str[index] = '?';
+        } else {
+            generateStrings(str, index + 1, result);
+        }
+    }
+}
