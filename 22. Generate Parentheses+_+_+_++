@@ -1,0 +1,28 @@
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        //base case
+        if(n == 0){
+            return new ArrayList<>();
+        }
+
+        List<String> result = new ArrayList<>();
+        Helper(0, 0, n, "", result);
+        return result;
+    }
+
+    public void Helper(int openP, int closeP, int n, String current, List<String> result){
+        //case case
+        if(current.length() == 2*n){
+            result.add(current);
+            return;
+        }
+
+        if(openP < n){
+            Helper(openP + 1, closeP, n, current + '(', result);
+        }
+
+        if(closeP < openP){
+            Helper(openP, closeP + 1, n, current + ')', result);
+        }
+    }
+}
