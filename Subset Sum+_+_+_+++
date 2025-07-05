@@ -1,0 +1,24 @@
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+    public static ArrayList<Integer> subsetSum(int num[]) {
+        // Write your code here..
+        ArrayList<Integer> result = new ArrayList<>();
+        Helper(num, 0, result, 0);
+        //sort the result and return it
+        Collections.sort(result);
+        return result;
+    }
+
+    public static void Helper(int[] nums, int index, ArrayList<Integer> result, int currentSum){
+        //base case
+        if(index == nums.length){
+            result.add(currentSum);
+            return;
+        }
+
+        Helper(nums, index + 1, result, currentSum + nums[index]);
+        Helper(nums, index + 1, result, currentSum);
+    }
+
+}
