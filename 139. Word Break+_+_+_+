@@ -1,0 +1,30 @@
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        //convert the dictionary to a set for a O(1) lookup
+        Set<String> set = new HashSet<>(wordDict);
+
+        //find the maximum word length in the dictionary
+        int max_length = 0;
+        for(String word : wordDict){
+            max_length = Math.max(max_length, word.length());
+        }
+
+        int n = s.length();
+        //dp[i] states if the substring of s[0..i] can be segmented
+        boolean[] dp = new boolean[n + 1];
+        //base case : empty string is valid
+        dp[0] = true;
+
+        for(int i = 1; i <= n; i++){
+            //check prefixes of length up to maxlength
+            for(int j = i - 1; j >= Math.max(0, i - max_length); j--){
+                if(dp[j] && set.contains(s.substring(j, i))){
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+
+        return dp[n];
+    }
+}
