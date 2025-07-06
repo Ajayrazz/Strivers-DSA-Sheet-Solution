@@ -1,0 +1,65 @@
+/*********************************************
+
+ Following is the TreeNode class structure
+
+ class TreeNode {
+     int val;
+     TreeNode left;
+     TreeNode right;
+    
+     TreeNode(int val) {
+         this.val = val;
+         this.left = null;
+         this.right = null;
+     }
+ }
+
+ *********************************************/
+
+import java.util.*;
+import java.util.*;
+
+class Pair {
+    TreeNode node;
+    int hd;
+    public Pair(TreeNode node, int hd){
+        this.node = node;
+        this.hd = hd;
+    }
+}
+
+public class Solution {
+    public static List<Integer> bottomView(TreeNode root) {
+        // Write your code here.
+        //base case
+        if(root == null){
+            return new ArrayList<>();
+        }
+
+        List<Integer> result = new ArrayList<>();
+        Map<Integer, Integer> map = new TreeMap<>();
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(root, 0));
+
+        while(!queue.isEmpty()){
+            Pair current = queue.poll();
+            TreeNode node = current.node;
+            int line = current.hd;
+
+            map.put(line, node.val);
+
+            if(node.left != null){
+                queue.add(new Pair(node.left, line - 1));
+            }
+
+            if(node.right != null){
+                queue.add(new Pair(node.right, line + 1));
+            }
+        }
+
+        //add all the values of map to result
+        result.addAll(map.values());
+
+        return result;
+    }
+}
