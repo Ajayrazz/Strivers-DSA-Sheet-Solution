@@ -1,0 +1,107 @@
+/************************************************************
+
+ Following is the Binary Tree node structure:
+
+ class TreeNode {
+     int data;
+     TreeNode left;
+     TreeNode right;
+
+     TreeNode(int data) {
+         this.data = data;
+         this.left = null;
+         this.right = null;
+     }
+ }
+
+ ************************************************************/
+
+import java.util.List;
+import java.util.*;
+
+public class Solution {
+    public static List<Integer> traverseBoundary(TreeNode root){
+        // Write your code here.
+        //base case
+        if(root == null){
+            return new ArrayList<>();
+        }
+
+        List<Integer> result = new ArrayList<>();
+        //If root is not a left node, then add it to result
+        if(!isLeaf(root)){
+            result.add(root.data);
+        }
+
+        //Add the leftBoundary, Leaves And Right Boundary
+        addLeftBoundary(root, result);
+        addLeaves(root, result);
+        addRightBoundary(root, result);
+
+        return result;
+    }
+
+    //Function To Check For Leaf Node
+    public static boolean isLeaf(TreeNode root){
+        return root.left == null && root.right == null;
+    }
+
+    //Function To Add LeftBoundary
+    public static void addLeftBoundary(TreeNode root, List<Integer> result){
+        TreeNode current = root.left;
+        while(current != null){
+            //if current is not a left node, then add its data to result
+            if(!isLeaf(current)){
+                result.add(current.data);
+            }
+
+            //Move to the left child if it exist, otherwise move to the right child
+            if(current.left != null){
+                current = current.left;
+            }
+            else {
+                current = current.right;
+            }
+        }
+    }
+
+    //Function To Add RightBoundary
+    public static void addRightBoundary(TreeNode root, List<Integer> result){
+        TreeNode current = root.right;
+        List<Integer> temp = new ArrayList<>();
+        while(current != null){
+            //if current is not a left node, then add it's value to result
+            if(!isLeaf(current)){
+                temp.add(current.data);
+            }
+
+            //moving to right child if it exist, otherwise move to left child
+            if(current.right != null){
+                current = current.right;
+            }
+            else {
+                current = current.left;
+            }
+        }
+
+        //add the value of temp in reverse order to the result
+        for(int i = temp.size() - 1; i >= 0; i--){
+            result.add(temp.get(i));
+        }
+    }
+
+    //Function To Add Leaves
+    public static void addLeaves(TreeNode root, List<Integer> result){
+        if(isLeaf(root)){
+            result.add(root.data);
+        }
+
+        if(root.left != null){
+            addLeaves(root.left, result);
+        }
+
+        if(root.right != null){
+            addLeaves(root.right, result);
+        }
+    }
+}
