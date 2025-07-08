@@ -1,0 +1,43 @@
+class Solution {
+    public boolean isMatch(String s, String p) {
+        int n = s.length();
+        int m = p.length();
+        int[][] dp = new int[n][m];
+
+        //fill the dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return wildcardMatching(n - 1, m - 1, s, p, dp) == 1;
+    }
+
+    public int wildcardMatching(int i, int j, String s, String p, int[][] dp){
+        //case 1 - if both the string is empty
+        if(i < 0 && j < 0) return 1;
+        //case 2 - if pattern is empty , but we are having some element in string
+        if(j < 0 && i >= 0) return 0;
+        //case 3 - if string is empty, but we are having some element in pattern
+        if(i < 0 && j >= 0) return allStar(p, j) ? 1 : 0;
+
+        if(dp[i][j] != -1) return dp[i][j];
+
+        if(p.charAt(j) == s.charAt(i) || p.charAt(j) == '?'){
+            return dp[i][j] = wildcardMatching(i - 1, j - 1, s, p, dp);
+        }
+        else if(p.charAt(j) == '*'){
+            return dp[i][j] = (wildcardMatching(i - 1, j, s, p, dp) == 1 || wildcardMatching(i, j - 1, s, p, dp) == 1) ? 1 : 0;
+        }
+        else {
+            return dp[i][j] = 0;
+        }
+    }
+
+    //function to check whether the given string is having all star as its character or not
+    public boolean allStar(String p, int j){
+        for(int k = 0; k <= j; k++){
+            if(p.charAt(k) != '*') return false;
+        }
+        return true;
+    }
+}
