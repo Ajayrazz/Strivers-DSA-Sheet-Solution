@@ -1,0 +1,58 @@
+class Solution {
+    public int numEnclaves(int[][] grid) {
+        Queue<Pair> queue = new LinkedList<>();
+        int[][] visited = new int[grid.length][grid[0].length];
+        //If the boundary element if having the value 1 , add its index to queue
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                if(i == 0 || j == 0 || i == grid.length - 1 || j == grid[0].length - 1){
+                    if(grid[i][j] == 1){
+                        queue.offer(new Pair(i, j));
+                        visited[i][j] = 1;
+                    }
+                }
+            }
+        }
+
+        //Down, Left, Right, Up
+        int[] delRow = {1, 0, 0, -1};
+        int[] delCol = {0, -1, 1, 0};
+
+        while(!queue.isEmpty()){
+            int row = queue.peek().first;
+            int col = queue.peek().second;
+            queue.remove();
+
+            for(int i = 0; i < 4; i++){
+                int nRow = row + delRow[i];
+                int nCol = col + delCol[i];
+
+                if(nRow >= 0 && nRow < grid.length && nCol >= 0 && nCol < grid[0].length && visited[nRow][nCol] == 0 && grid[nRow][nCol] == 1){
+                    //add index to the queue
+                    queue.offer(new Pair(nRow, nCol));
+                    visited[nRow][nCol] = 1;
+                }
+            }
+        }
+
+        int count = 0;
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                if(grid[i][j] == 1 && visited[i][j] == 0){
+                    count += 1;
+                }
+            }
+        }
+
+        return count;
+    }
+}
+
+class Pair {
+    int first;
+    int second;
+    public Pair(int first, int second){
+        this.first = first;
+        this.second = second;
+    }
+}
