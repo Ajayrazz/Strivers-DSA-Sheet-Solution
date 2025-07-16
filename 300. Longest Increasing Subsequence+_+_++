@@ -1,0 +1,28 @@
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        int n = nums.length;
+        int[][] dp = new int[n][n + 1];
+        //fill the dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return lengthOfLCSUtil(0, -1, n, nums, dp);
+    }
+
+    public int lengthOfLCSUtil(int index, int prev_index, int n, int[] nums, int[][] dp){
+        //case 1 : base case
+        if(index == n) return 0;
+        //case 2
+        if(dp[index][prev_index + 1] != -1) return dp[index][prev_index + 1];
+
+        int notTake = lengthOfLCSUtil(index + 1, prev_index, n, nums, dp);
+        int take = 0;
+        if(prev_index == -1 || nums[index] > nums[prev_index]){
+            take = 1 + lengthOfLCSUtil(index + 1, index, n, nums, dp);
+        }
+
+        //update dp and return it
+        return dp[index][prev_index + 1] = Math.max(take, notTake);
+    }
+}
