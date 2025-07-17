@@ -1,0 +1,32 @@
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+	public static ArrayList<String> binaryStrings(String str) {
+		// Write your code here.
+		ArrayList<String> result = new ArrayList<>();
+		Helper(str.toCharArray(), 0, result);
+
+		return result;
+	}
+
+	public static void Helper(char[] str, int index, ArrayList<String> result){
+		//base case
+		if(index == str.length){
+			result.add(new String(str));
+			return;
+		}
+
+		if(str[index] == '?'){
+			str[index] = '0';
+			Helper(str, index + 1, result);
+
+			str[index] = '1';
+			Helper(str, index + 1, result);
+
+			str[index] = '?';
+		}
+		else {
+			Helper(str, index + 1, result);
+		}
+	}
+}
