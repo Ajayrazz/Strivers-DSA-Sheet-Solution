@@ -1,0 +1,108 @@
+import java.util.*;
+
+public class Solution {
+
+    // Disjoint Set Union (Union-Find) class with Union by Size and Path Compression
+    static class DisjointSet {
+        List<Integer> rank = new ArrayList<>();
+        List<Integer> parent = new ArrayList<>();
+        List<Integer> size = new ArrayList<>();
+
+        // Constructor to initialize DSU for 'n' elements
+        public DisjointSet(int n) {
+            for (int i = 0; i <= n; i++) {
+                rank.add(0);
+                parent.add(i); // Initially, each node is its own parent
+                size.add(1);   // Size of each component is initially 1
+            }
+        }
+
+        // Finds the ultimate parent of a node with path compression
+        public int findUPar(int node) {
+            if (node == parent.get(node)) {
+                return node;
+            }
+            int ulp = findUPar(parent.get(node));
+            parent.set(node, ulp); // Path compression
+            return parent.get(node);
+        }
+
+        // Union two sets by size
+        public void unionBySize(int u, int v) {
+            int ulp_u = findUPar(u);
+            int ulp_v = findUPar(v);
+
+            // If they are already in the same set, no need to union
+            if (ulp_u == ulp_v) return;
+
+            // Merge the smaller component into the larger one
+            if (size.get(ulp_u) < size.get(ulp_v)) {
+                parent.set(ulp_u, ulp_v);
+                size.set(ulp_v, size.get(ulp_v) + size.get(ulp_u));
+            } else {
+                parent.set(ulp_v, ulp_u);
+                size.set(ulp_u, size.get(ulp_u) + size.get(ulp_v));
+            }
+        }
+    }
+
+    // Helper function to check if the given coordinates are within the grid bounds
+    private static boolean isValid(int r, int c, int n, int m) {
+        return r >= 0 && r < n && c >= 0 && c < m;
+    }
+
+    
+    public static int[] numOfIslandsII(int n, int m, int[][] q) {
+        DisjointSet ds = new DisjointSet(n * m); // Create DSU for all n*m cells
+        int[][] vis = new int[n][m];             // Visited matrix to mark land cells
+        int cnt = 0;                              // Number of islands
+        List<Integer> ans = new ArrayList<>();   // List to store island counts after each operation
+
+        // Directions for adjacent cells: up, right, down, left
+        int[] dr = {-1, 0, 1, 0};
+        int[] dc = {0, 1, 0, -1};
+
+        for (int i = 0; i < q.length; i++) {
+            int row = q[i][0];
+            int col = q[i][1];
+
+            // If cell is already land, just append the current count
+            if (vis[row][col] == 1) {
+                ans.add(cnt);
+                continue;
+            }
+
+            // Mark current cell as land
+            vis[row][col] = 1;
+            cnt++; // New island is formed
+
+            // Try connecting this cell with all 4 adjacent land cells
+            for (int dir = 0; dir < 4; dir++) {
+                int adjr = row + dr[dir];
+                int adjc = col + dc[dir];
+
+                // If adjacent cell is valid and already land
+                if (isValid(adjr, adjc, n, m) && vis[adjr][adjc] == 1) {
+                    int nodeNo = row * m + col;               // Current cell's unique id
+                    int adjNodeNo = adjr * m + adjc;          // Adjacent cell's unique id
+
+                    // If they are part of different islands, union them
+                    if (ds.findUPar(nodeNo) != ds.findUPar(adjNodeNo)) {
+                        cnt--; // Merging two islands into one reduces the island count
+                        ds.unionBySize(nodeNo, adjNodeNo);
+                    }
+                }
+            }
+
+            ans.add(cnt); // Add current island count to result
+        }
+
+        // Convert List<Integer> to int[]
+        int[] res = new int[ans.size()];
+        for (int i = 0; i < ans.size(); i++) {
+            res[i] = ans.get(i);
+        }
+
+        return res;
+    }
+}
