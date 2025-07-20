@@ -1,0 +1,32 @@
+import java.util.* ;
+import java.io.*; 
+
+public class Solution {
+	public static int matrixMultiplication(int[] arr , int N) {
+		// Write your code here
+		int[][] dp = new int[N][N];
+		//fill the dp with -1
+		for(int[] row : dp){
+			Arrays.fill(row, -1);
+		}
+
+		return Helper(1, N - 1, arr, dp);
+	}
+
+	public static int Helper(int i, int j, int[] arr, int[][] dp){
+		//case 1
+		if(i == j) return 0;
+		//case 2
+		if(dp[i][j] != -1) return dp[i][j];
+
+		int mini = Integer.MAX_VALUE;
+		for(int k = i; k < j; k++){
+			int ans = Helper(i, k, arr, dp) + Helper(k + 1, j, arr, dp) + arr[i - 1] * arr[k] * arr[j];
+			//update mini
+			mini = Math.min(mini, ans);
+		}
+
+		//update dp
+		return dp[i][j] = mini;
+	}
+}
