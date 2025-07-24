@@ -1,0 +1,41 @@
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+    public static ArrayList < String > findSum(int[][] arr, int n) {
+        // Write your code here.
+        int[][] visited = new int[n][n];
+        //Down , Left, Right, Up
+        int[] dx = {1, 0, 0, -1};
+        int[] dy = {0, -1, 1, 0};
+
+        ArrayList<String> result = new ArrayList<>();
+        if(arr[0][0] == 1){
+            Helper(0, 0, result, "", arr, visited, dx, dy);
+        }
+
+        return result;
+    }
+
+    //Helper Function
+    public static void Helper(int i, int j, ArrayList<String> result, String current, int[][] arr, int[][] visited, int[] dx, int[] dy){
+        if(i == arr.length - 1 && j == arr.length - 1){
+            result.add(current);
+            return;
+        }
+
+        String direction = "DLRU";
+        for(int index = 0; index < 4; index++){
+            int nextI = i + dx[index];
+            int nextJ = j + dy[index];
+
+            if(nextI >= 0 && nextI < arr.length && nextJ >= 0 && nextJ < arr.length && visited[nextI][nextJ] == 0 && arr[nextI][nextJ] == 1){
+                //visit
+                visited[i][j] = 1;
+                //recall the function
+                Helper(nextI, nextJ, result, current + direction.charAt(index), arr, visited, dx, dy);
+                //unvisit
+                visited[i][j] = 0;
+            }
+        }
+    }
+}
