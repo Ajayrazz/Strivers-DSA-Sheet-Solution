@@ -1,0 +1,39 @@
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int[][][] dp = new int[n][2][3];
+        //fill the dp with -1
+        for(int[][] row : dp){
+            for(int[] arr : row){
+                Arrays.fill(arr, -1);
+            }
+        }
+
+        return Helper(0, 0, 2, prices, dp);
+    }
+
+    public int Helper(int index, int buy, int capacity, int[] prices, int[][][] dp){
+        //base case
+        if(index == prices.length || capacity == 0){
+            return 0;
+        }
+
+        if(dp[index][buy][capacity] != -1) return dp[index][buy][capacity];
+
+        int profit = 0;
+        if(buy == 0){
+            int operation1 = Helper(index + 1, 0, capacity, prices, dp);
+            int operation2 = -prices[index] + Helper(index + 1, 1, capacity, prices, dp);
+            //update profit
+            profit = Math.max(operation1, operation2);
+        }
+        else {
+            int operation1 = Helper(index + 1, 1, capacity, prices, dp);
+            int operation2 = prices[index] + Helper(index + 1, 0, capacity - 1, prices, dp);
+            //update profit
+            profit = Math.max(operation1, operation2);
+        }
+
+        return dp[index][buy][capacity] = profit;
+    }
+}
