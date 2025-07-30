@@ -1,0 +1,17 @@
+class Solution {
+    public String reverseWords(String s) {
+        //trim
+        s.trim();
+        String[] word_arr = s.split(" ");
+        int left = 0, right = word_arr.length - 1;
+        while(left <= right){
+            String temp = word_arr[left];
+            word_arr[left] = word_arr[right];
+            word_arr[right] = temp;
+…                sb.append(word);
+            }
+        }
+
+        return sb.toString();
+    }
+}
