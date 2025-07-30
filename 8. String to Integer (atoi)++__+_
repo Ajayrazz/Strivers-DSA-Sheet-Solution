@@ -1,0 +1,13 @@
+class Solution {
+    public int myAtoi(String s) {
+        int index = 0;
+        int sign = 1;
+        int max_value = Integer.MAX_VALUE;
+        int min_value = Integer.MIN_VALUE;
+        int result = 0;
+
+        //remove the while space
+        while(index < s.length() && s.charAt(index) == ' '){
+…        return sign * result;
+    }
+}
