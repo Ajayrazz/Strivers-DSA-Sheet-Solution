@@ -1,0 +1,13 @@
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        //sort the strs
+        Arrays.sort(strs);
+
+        int min_length = Integer.MAX_VALUE;
+        for(String str : strs){
+            min_length = Math.min(min_length, str.length());
+        }
+
+…        return sb.toString();
+    }
+}
