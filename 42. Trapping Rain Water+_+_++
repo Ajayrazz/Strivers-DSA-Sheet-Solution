@@ -1,0 +1,26 @@
+class Solution {
+    public int trap(int[] height) {
+        int n = height.length;
+        Stack<Integer> stack = new Stack<>();
+        int max_water = 0;
+
+        for(int right = 0; right < height.length; right++){
+            while(!stack.isEmpty() && height[stack.peek()] < height[right]){
+                int mid = stack.pop();
+                if(stack.isEmpty()){
+                    break;
+                }
+
+                int left = stack.peek();
+                int min_height = Math.min((height[right] - height[mid]), (height[left] - height[mid]));
+
+                int width = right - left - 1;
+                max_water += (min_height * width);
+            }
+            
+            stack.push(right);
+        }
+
+        return max_water;
+    }
+}
