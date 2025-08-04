@@ -1,0 +1,43 @@
+import java.util.*;
+
+public class Solution {
+    public static int getLengthofLongestSubstring(int k, String s) {
+        // Handle edge cases
+        if (s == null || s.length() == 0 || k == 0) {
+            return 0;
+        }
+
+        int left = 0; // The left pointer of the sliding window
+        int maxLength = 0; // Stores the maximum length found
+        
+        // HashMap to store the frequency of characters in the current window
+        Map<Character, Integer> windowCharCounts = new HashMap<>();
+
+        // Iterate through the string with the right pointer to expand the window
+        for (int right = 0; right < s.length(); right++) {
+            char rightChar = s.charAt(right);
+            // Add the current character to the window and update its count
+            windowCharCounts.put(rightChar, windowCharCounts.getOrDefault(rightChar, 0) + 1);
+
+            // Shrink the window from the left if the number of distinct characters exceeds k
+            while (windowCharCounts.size() > k) {
+                char leftChar = s.charAt(left);
+                // Decrement the count of the character at the left pointer
+                windowCharCounts.put(leftChar, windowCharCounts.get(leftChar) - 1);
+                
+                // If the character's count becomes 0, remove it from the map
+                if (windowCharCounts.get(leftChar) == 0) {
+                    windowCharCounts.remove(leftChar);
+                }
+                
+                // Move the left pointer to shrink the window
+                left++;
+            }
+
+            // Update the maximum length with the current valid window size
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+
+        return maxLength;
+    }
+}
