@@ -1,0 +1,20 @@
+class Solution {
+    public int numberOfSubstrings(String s) {
+        int left = 0, right = 0, count = 0;
+        int[] char_count = new int[3];
+
+        while(right < s.length()){
+            char_count[s.charAt(right) - 'a']++;
+
+            while(char_count[0] > 0 && char_count[1] > 0 && char_count[2] > 0){
+                count += s.length() - right;
+                char_count[s.charAt(left) - 'a']--;
+                left++;
+            }
+
+            right++;
+        }
+
+        return count;
+    }
+}
