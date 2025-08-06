@@ -1,0 +1,26 @@
+class Solution {
+    public boolean checkValidString(String s) {
+        int open_count = 0, close_count = 0;
+        for(int i = 0; i < s.length(); i++){
+            if(s.charAt(i) == '(' || s.charAt(i) == '*'){
+                open_count++;
+            }
+            else {
+                open_count--;
+            }
+
+            if(s.charAt(s.length() - 1 - i) == ')' || s.charAt(s.length() - 1 - i) == '*'){
+                close_count++;
+            }
+            else {
+                close_count--;
+            }
+
+            if(open_count < 0 || close_count < 0){
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
