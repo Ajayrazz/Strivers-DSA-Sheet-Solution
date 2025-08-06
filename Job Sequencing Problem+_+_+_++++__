@@ -1,0 +1,36 @@
+import java.util.*;
+public class Solution {
+    public static int[] jobScheduling(int [][]jobs) {
+        // Write your code here
+        //sort jobs on the basis of profit in decreasing order
+        Arrays.sort(jobs, (a, b) -> b[2] - a[2]);
+
+        int maxDeadline = 0;
+        for(int i = 0; i < jobs.length; i++){
+            maxDeadline = Math.max(maxDeadline, jobs[i][1]);
+        }
+
+        int[] slots = new int[maxDeadline + 1];
+        //fill the slots with -1
+        Arrays.fill(slots, -1);
+
+        int countJobs = 0;
+        int maxProfit = 0;
+
+        for(int i = 0; i < jobs.length; i++){
+            int deadline = jobs[i][1];
+            int profit = jobs[i][2];
+
+            for(int j = deadline; j > 0; j--){
+                if(slots[j] == -1){
+                    slots[j] = jobs[i][0];
+                    countJobs++;
+                    maxProfit += profit;
+                    break;
+                }
+            }
+        }
+
+        return new int[]{countJobs, maxProfit};
+    }
+}
