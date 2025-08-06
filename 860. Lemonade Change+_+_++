@@ -1,0 +1,41 @@
+class Solution {
+    public boolean lemonadeChange(int[] bills) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int num : bills){
+            //update bills
+            map.put(num, map.getOrDefault(num, 0) + 1);
+
+            //case 1
+            if(num == 5){
+                continue;
+            }
+
+            //case 2
+            if(num == 10){
+                if(map.get(5) == 0){
+                    return false;
+                }
+                else {
+                    if(map.get(5) > 0){
+                        map.put(5, map.get(5) - 1);
+                    }
+                }
+            }
+
+            //case 3
+            if(num == 20){
+                if(map.get(5) == 0 && map.get(10) == 0){
+                    return false;
+                }
+                else {
+                    if(map.get(5) > 0 && map.get(10) > 0){
+                        map.put(5, map.get(5) - 1);
+                        map.put(10, map.get(10) - 1);
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+}
