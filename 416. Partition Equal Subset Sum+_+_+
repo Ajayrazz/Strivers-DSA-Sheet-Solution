@@ -1,0 +1,39 @@
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int total_sum = 0;
+        for(int num : nums){
+            total_sum += num;
+        }
+
+        if(total_sum % 2 == 1) return false;
+        int target = total_sum / 2;
+        int[][] dp = new int[nums.length][target + 1];
+        //fill the dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return Helper(nums.length - 1, target, nums, dp);
+    }
+
+    public boolean Helper(int index, int target, int[] arr, int[][] dp){
+        //case 1
+        if(target == 0) return true;
+        //case 2
+        if(index == 0) return arr[index] == target;
+        //case 3
+        if(dp[index][target] != -1){
+            return dp[index][target] == 0 ? false : true;
+        }
+
+        boolean notTake = Helper(index - 1, target, arr, dp);
+        boolean take = false;
+        if(arr[index] <= target){
+            take = Helper(index - 1, target - arr[index], arr, dp);
+        }
+
+        //update dp
+        dp[index][target] = take || notTake ? 1 : 0;
+        return take || notTake;
+    }
+}
