@@ -1,0 +1,38 @@
+import java.util.* ;
+import java.io.*; 
+public class Solution {
+    public static boolean subsetSumToK(int n, int k, int arr[]){
+        // Write your code here.
+        int[][] dp = new int[n][k + 1];
+        //fill the dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return Helper(n - 1, k, arr, dp);
+    }
+
+    public static boolean Helper(int index, int target, int[] arr, int[][] dp){
+        //case 1
+        if(target == 0) return true;
+        //case 2
+        if(index == 0){
+            return arr[index] == target;
+        }
+        //case 3
+        if(dp[index][target] != -1){
+            return dp[index][target] == 0 ? false : true;
+        }
+
+        boolean notTake = Helper(index - 1, target, arr, dp);
+        boolean take = false;
+        if(arr[index] <= target){
+            take = Helper(index - 1, target - arr[index], arr, dp);
+        }
+
+        //update dp
+        dp[index][target] = take || notTake ? 1 : 0;
+
+        return take || notTake;
+    }
+}
