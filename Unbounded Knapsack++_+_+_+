@@ -1,0 +1,31 @@
+import java.util.*;
+public class Solution {
+    public static int unboundedKnapsack(int n, int w, int[] profit, int[] weight) {
+        // Write your code here.
+        int[][] dp = new int[n][w + 1];
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return Helper(n - 1, w, profit, weight, dp);
+    }
+
+    public static int Helper(int index, int capacity, int[] profit, int[] weight, int[][] dp){
+        //case 1
+        if(index == 0){
+            return (int) (capacity / weight[0]) * profit[0];
+        }
+
+        //case 2
+        if(dp[index][capacity] != -1) return dp[index][capacity];
+
+        int notTake = Helper(index - 1, capacity, profit, weight, dp);
+        int take = Integer.MIN_VALUE;
+        if(weight[index] <= capacity){
+            take = profit[index] + Helper(index, capacity - weight[index], profit, weight, dp);
+        }
+
+        //update dp and return it
+        return dp[index][capacity] = Math.max(take, notTake);
+    }
+}
