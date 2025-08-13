@@ -1,0 +1,47 @@
+class Solution {
+    public List<Integer> eventualSafeNodes(int[][] graph) {
+        int V = graph.length;
+        List<List<Integer>> adj = new ArrayList<>();
+        for(int i = 0; i < V; i++){
+            adj.add(new ArrayList<>());
+        }
+
+        for(int i = 0; i < V; i++){
+            for(int neighbor : graph[i]){
+                adj.get(neighbor).add(i);
+            }
+        }
+
+        int[] indegree = new int[V];
+        for(int i = 0; i < V; i++){
+            for(int it : adj.get(i)){
+                indegree[it]++;
+            }
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        for(int i = 0; i < V; i++){
+            if(indegree[i] == 0){
+                queue.add(i);
+            }
+        }
+
+        List<Integer> result = new ArrayList<>();
+        while(!queue.isEmpty()){
+            int node = queue.poll();
+            result.add(node);
+
+            for(int it : adj.get(node)){
+                indegree[it]--;
+
+                if(indegree[it] == 0){
+                    queue.add(it);
+                }
+            }
+        }
+
+        //sort result
+        Collections.sort(result);
+        return result;
+    }
+}
