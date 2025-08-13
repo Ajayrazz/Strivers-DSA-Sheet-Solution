@@ -1,0 +1,61 @@
+class Tuple {
+    int distance;
+    int src;
+    int dest;
+    public Tuple(int distance, int src, int dest){
+        this.distance = distance;
+        this.src = src;
+        this.dest = dest;
+    }
+}
+
+class Solution {
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        int n = grid.length;
+        //base case
+        if(grid[0][0] != 0 || grid[n - 1][n - 1] != 0){
+            return -1;
+        }
+
+        //moving in all 8 direction
+        int[] dx = {-1, -1, -1, 0, 1, 1, 1, 0};
+        int[] dy = {-1, 0, 1, 1, 1, 0, -1, -1};
+
+        Queue<Tuple> queue = new LinkedList<>();
+        queue.add(new Tuple(1, 0, 0));
+
+        int[][] dist = new int[n][n];
+        //fill it with positive infinity value
+        for(int[] row : dist){
+            Arrays.fill(row, Integer.MAX_VALUE);
+        }
+
+        dist[0][0] = 1;
+
+        while(!queue.isEmpty()){
+            Tuple current = queue.poll();
+            int distance = current.distance;
+            int x = current.src;
+            int y = current.dest;
+
+            if(x == n - 1 && y == n - 1){
+                return distance;
+            }
+
+            for(int i = 0; i < 8; i++){
+                int nRow = x + dx[i];
+                int nCol = y + dy[i];
+
+                //valid case
+                if(nRow >= 0 && nCol >= 0 && nRow < n && nCol < n && grid[nRow][nCol] == 0 && distance + 1 < dist[nRow][nCol]){
+                    //update dist
+                    dist[nRow][nCol] = 1 + distance;
+                    //add it to queue
+                    queue.add(new Tuple(dist[nRow][nCol], nRow, nCol));
+                }
+            }
+        }
+
+        return -1;
+    }
+}
