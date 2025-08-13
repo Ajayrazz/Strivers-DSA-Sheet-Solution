@@ -1,0 +1,45 @@
+
+class Solution {
+    // Function to find the shortest path from a source node to all other nodes
+    public int[] shortestPath(ArrayList<ArrayList<Integer>> adj, int src) {
+        // code here
+        int n = adj.size();
+        List<List<Integer>> graph = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            graph.add(new ArrayList<>());
+        }
+        
+        for(int i = 0; i < n; i++){
+            for(int neighbor : adj.get(i)){
+                graph.get(i).add(neighbor);
+                graph.get(neighbor).add(i);
+            }
+        }
+        
+        int[] dist = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
+        
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(src);
+        
+        while(!queue.isEmpty()){
+            int node = queue.poll();
+            for(int neighbor : graph.get(node)){
+                if(dist[node] + 1 < dist[neighbor]){
+                    dist[neighbor] = 1 + dist[node];
+                    
+                    queue.add(neighbor);
+                }
+            }
+        }
+        
+        for(int i = 0; i < n; i++){
+            if(dist[i] == Integer.MAX_VALUE){
+                dist[i] = -1;
+            }
+        }
+        
+        return dist;
+    }
+}
