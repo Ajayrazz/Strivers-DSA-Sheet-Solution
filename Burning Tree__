@@ -1,0 +1,57 @@
+/*
+class Node {
+    int data;
+    Node left;
+    Node right;
+
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}  */
+class Solution {
+    public static int minTime(Node root, int target) {
+        // code here
+        int[] ans = {0};
+        Helper(root, target, ans);
+        return ans[0];
+    }
+    
+    //Helper function
+    public static int Helper(Node node, int target, int[] ans){
+        //base case
+        if(node == null) return -1;
+        
+        if(node.data == target){
+            int depth = Height(node) - 1;
+            ans[0] = Math.max(ans[0], depth);
+            return 1;
+        }
+        
+        int left = Helper(node.left, target, ans);
+        if(left != -1){
+            int depth = Height(node.right);
+            ans[0] = Math.max(ans[0], depth + left);
+            return left + 1;
+        }
+        
+        int right = Helper(node.right, target, ans);
+        if(right != -1){
+            int depth = Height(node.left);
+            ans[0] = Math.max(ans[0], depth + right);
+            return right + 1;
+        }
+        
+        return -1;
+    }
+    
+    //Height function
+    public static int Height(Node root){
+        if(root == null) return 0;
+        int left = Height(root.left);
+        int right = Height(root.right);
+        
+        return Math.max(left, right) + 1;
+    }
+}
