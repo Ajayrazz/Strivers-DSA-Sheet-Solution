@@ -1,0 +1,47 @@
+class Solution {
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        int n = nums.length;
+        int[][] dp = new int[n][n + 1];
+        //fill the dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+        //sort nums
+        Arrays.sort(nums);
+        ldsUtil(0, -1, nums, dp);
+        int index = 0, prev_index = -1;
+        List<Integer> result = new ArrayList<>();
+        while(index < nums.length){
+            int take_length = Integer.MIN_VALUE;
+            if(prev_index == -1 || nums[index] % nums[prev_index] == 0){
+                int next_length = (index + 1 < nums.length) ? dp[index + 1][index + 1] : 0;
+                take_length = 1 + next_length;
+            }
+
+            if(take_length != Integer.MIN_VALUE && take_length == dp[index][prev_index + 1]){
+                result.add(nums[index]);
+                prev_index = index;
+            }
+            index++;
+        }
+
+        return result;
+    }
+
+    public int ldsUtil(int index, int prev_index, int[] nums, int[][] dp){
+        //case 1
+        if(index == nums.length) return 0;
+        //case 2
+        if(dp[index][prev_index + 1] != -1){
+            return dp[index][prev_index + 1];
+        }
+
+        int notTake = ldsUtil(index + 1, prev_index, nums, dp);
+        int take = 0;
+        if(prev_index == -1 || nums[index] % nums[prev_index] == 0){
+            take = 1 + ldsUtil(index + 1, index, nums, dp);
+        }
+
+        return dp[index][prev_index + 1] = Math.max(take, notTake);
+    }
+}
