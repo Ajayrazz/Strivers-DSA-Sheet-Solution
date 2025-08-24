@@ -1,0 +1,40 @@
+class Solution {
+    public int minCost(int n, int[] cuts) {
+        int c = cuts.length;
+        List<Integer> cut_p = new ArrayList<>();
+        for(int num : cuts){
+            cut_p.add(num);
+        }
+
+        cut_p.add(0);
+        cut_p.add(n);
+        //sort
+        Collections.sort(cut_p);
+
+        int[][] dp = new int[c + 1][c + 1];
+        //fill dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+        return Helper(1, c, cut_p, dp);
+    }
+
+    public int Helper(int i, int j, List<Integer> cuts, int[][] dp){
+        //base case
+        if(i > j) return 0;
+        //case 2
+        if(dp[i][j] != -1) return dp[i][j];
+
+        int mini = Integer.MAX_VALUE;
+        
+        for (int ind = i; ind <= j; ind++) {
+            int ans = cuts.get(j + 1) - cuts.get(i - 1) +
+                      Helper(i, ind - 1, cuts, dp) +
+                      Helper(ind + 1, j, cuts, dp);
+
+            mini = Math.min(mini, ans);
+        }
+
+        return dp[i][j] = mini;
+    }
+}
