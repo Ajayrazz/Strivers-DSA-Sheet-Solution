@@ -1,0 +1,42 @@
+class Solution {
+    public int maxCoins(int[] nums) {
+        int n = nums.length;
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        //add element of nums to list
+        for(int num : nums){
+            list.add(num);
+        }
+        list.add(1);
+
+        int[][] dp = new int[list.size()][list.size()];
+        //fill dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+
+        return Helper(1, n, list, dp);
+    }
+
+    public int Helper(int i, int j, List<Integer> list, int[][] dp){
+        //case 1
+        if(i > j) return 0;
+
+        //case 2
+        if(dp[i][j] != -1){
+            return dp[i][j];
+        }
+
+        int max_val = Integer.MIN_VALUE;
+        int right = 1;
+
+        for(int k = i; k <= j; k++){
+            int steps = (list.get(i - 1) * list.get(k) * list.get(j + 1)) + Helper(i, k - 1, list, dp) + Helper(k + 1, j, list, dp);
+
+            //update max
+            max_val = Math.max(max_val, steps);
+        }
+
+        return dp[i][j] = max_val;
+    }
+}
