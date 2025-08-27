@@ -1,0 +1,100 @@
+/************************************************************
+
+ Following is the Binary Tree node structure:
+
+ class TreeNode {
+     int data;
+     TreeNode left;
+     TreeNode right;
+
+     TreeNode(int data) {
+         this.data = data;
+         this.left = null;
+         this.right = null;
+     }
+ }
+
+ ************************************************************/
+
+import java.util.*;
+
+public class Solution {
+    public static List<Integer> traverseBoundary(TreeNode root){
+        // Base Case
+        if(root == null){
+            return new ArrayList<>();
+        }
+
+        List<Integer> result = new ArrayList<>();
+
+        //if root is not a leaf node
+        if(!isLeaf(root)){
+            result.add(root.data);
+        }
+
+        addLeftBoundary(root, result);
+        addLeaves(root, result);
+        addRightBoundary(root, result);
+
+        return result;
+    }
+
+    //isLeaf function
+    public static boolean isLeaf(TreeNode root){
+        return root.left == null && root.right == null;
+    }
+
+    //addLeftBoundary function
+    public static void addLeftBoundary(TreeNode root, List<Integer> result){
+        TreeNode current = root.left;
+        while(current != null){
+            if(!isLeaf(current)){
+                result.add(current.data);
+            }
+
+            if(current.left != null){
+                current = current.left;
+            }
+            else {
+                current = current.right;
+            }
+        }
+    }
+
+    //addRightBoundary function
+    public static void addRightBoundary(TreeNode root, List<Integer> result){
+        TreeNode current = root.right;
+        List<Integer> temp = new ArrayList<>();
+        while(current != null){
+            if(!isLeaf(current)){
+                temp.add(current.data);
+            }
+
+            if(current.right != null){
+                current = current.right;
+            }
+            else {
+                current = current.left;
+            }
+        }
+
+        for(int i = temp.size() - 1; i >= 0; i--){
+            result.add(temp.get(i));
+        }
+    }
+
+    //addLeaves function
+    public static void addLeaves(TreeNode root, List<Integer> result){
+        if(isLeaf(root)){
+            result.add(root.data);
+        }
+
+        if(root.left != null){
+            addLeaves(root.left, result);
+        }
+        
+        if(root.right != null){
+            addLeaves(root.right, result);
+        }
+    }
+}
