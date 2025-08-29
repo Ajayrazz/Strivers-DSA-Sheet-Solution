@@ -1,0 +1,35 @@
+class Meeting {
+    int start;
+    int end;
+    public Meeting(int start, int end){
+        this.start = start;
+        this.end = end;
+    }
+}
+
+class Solution {
+    // Function to find the maximum number of meetings that can
+    // be performed in a meeting room.
+    public int maxMeetings(int start[], int end[]) {
+        // add your code here
+        int n = start.length;
+        Meeting[] meeting = new Meeting[n];
+        for(int i = 0; i < n; i++){
+            meeting[i] = new Meeting(start[i], end[i]);
+        }
+        
+        //sort meeting based on their end time
+        Arrays.sort(meeting, (a, b) -> a.end - b.end);
+        
+        int max_meet = 1;
+        int last_end = meeting[0].end;
+        for(int i = 1; i < n; i++){
+            if(meeting[i].start > last_end){
+                max_meet += 1;
+                last_end = meeting[i].end;
+            }
+        }
+        
+        return max_meet;
+    }
+}
