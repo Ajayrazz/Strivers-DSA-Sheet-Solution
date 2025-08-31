@@ -1,0 +1,43 @@
+class Solution {
+    // Function to find all possible paths
+    public ArrayList<String> ratInMaze(int[][] maze) {
+        // code here
+        int n = maze.length;
+        if(maze[0][0] != 1 && maze[n - 1][n - 1] != 1){
+            return new ArrayList<>();
+        }
+        
+        boolean[][] visited = new boolean[n][n];
+        int[] dx = {1, 0, 0, -1};
+        int[] dy = {0, -1, 1, 0};
+        
+        ArrayList<String> result = new ArrayList<>();
+        if(maze[0][0] == 1){
+            Helper(0, 0, n, maze, result, "", visited, dx, dy);
+        }
+        
+        return result;
+    }
+    
+    public void Helper(int row, int col, int n, int[][] maze, ArrayList<String> result, String current, boolean[][] visited, int[] dx, int[] dy){
+        if(row == n - 1 && col == n - 1){
+            result.add(current);
+            return;
+        }
+        
+        String direction = "DLRU";
+        for(int index = 0; index < 4; index++){
+            int nRow = row + dx[index];
+            int nCol = col + dy[index];
+            
+            if(nRow >= 0 && nRow < n && nCol >= 0 && nCol < n && maze[nRow][nCol] == 1 && !visited[nRow][nCol]){
+                //visited
+                visited[row][col] = true;
+                //recall the function
+                Helper(nRow, nCol, n, maze, result, current + direction.charAt(index), visited, dx, dy);
+                //un-visit
+                visited[row][col] = false;
+            }
+        }
+    }
+}
