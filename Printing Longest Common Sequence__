@@ -1,0 +1,45 @@
+// User function Template for Java
+
+class Solution {
+    public ArrayList<Integer> getLIS(int arr[]) {
+        int n = arr.length;
+        int[][] dp = new int[n][n + 1];
+        //fill the dp with -1
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+        
+        Helper(0, -1, arr, dp);
+        
+        ArrayList<Integer> result = new ArrayList<>();
+        int index = 0, prev_index = -1;
+        while(index < n){
+            if(prev_index == -1 || arr[index] > arr[prev_index]){
+                int take_length = 1 + ((index + 1 < n) ? dp[index + 1][index + 1] : 0);
+                
+                if(take_length == dp[index][prev_index + 1]){
+                    result.add(arr[index]);
+                    prev_index = index;
+                }
+            }
+            index++;
+        }
+        
+        return result;
+    }
+    
+    public int Helper(int index, int prev_index, int[] arr, int[][] dp){
+        //case 1
+        if(index == arr.length) return 0;
+        //case 2
+        if(dp[index][prev_index + 1] != -1) return dp[index][prev_index + 1];
+        
+        int notTake = Helper(index + 1, prev_index, arr, dp);
+        int take = 0;
+        if(prev_index == -1 || arr[index] > arr[prev_index]){
+            take = 1 + Helper(index + 1, index, arr, dp);
+        }
+        
+        return dp[index][prev_index + 1] = Math.max(take, notTake);
+    }
+}
