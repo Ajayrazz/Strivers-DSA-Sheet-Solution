@@ -1,0 +1,20 @@
+class Solution {
+    public static int minCost(int[] arr) {
+        // code here
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for(int a : arr){
+            pq.add(a);
+        }
+        
+        int result = 0;
+        while(pq.size() > 1){
+            int val1 = pq.poll();
+            int val2 = pq.poll();
+            
+            result += (val1 + val2);
+            pq.add(val1 + val2);
+        }
+        
+        return result;
+    }
+}
