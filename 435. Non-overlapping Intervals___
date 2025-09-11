@@ -1,0 +1,22 @@
+class Solution {
+    public int eraseOverlapIntervals(int[][] intervals) {
+        //sort intervals based on end time in ascending order
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));
+
+        int index = 1;
+        int count = 0;
+        int lastEndTime = intervals[0][1];
+
+        while(index < intervals.length){
+            if(intervals[index][0] < lastEndTime){
+                count += 1;
+            }
+            else {
+                lastEndTime = Math.max(lastEndTime, intervals[index][1]);
+            }
+            index++;
+        }
+
+        return count;
+    }
+}
