@@ -1,0 +1,25 @@
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        //sort intervals based on start time in ascending order
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+        List<int[]> result = new ArrayList<>();
+
+        int index = 0;
+        while(index < intervals.length){
+            int start_time = intervals[index][0];
+            int end_time = intervals[index][1];
+
+            //merge
+            while(index + 1 < intervals.length && intervals[index + 1][0] <= end_time){
+                index++;
+                //update end_time
+                end_time = Math.max(end_time, intervals[index][1]);
+            }
+
+            result.add(new int[]{start_time, end_time});
+            index++;
+        }
+
+        return result.toArray(new int[result.size()][]);
+    }
+}
