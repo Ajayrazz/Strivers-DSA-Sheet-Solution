@@ -1,0 +1,39 @@
+class Solution {
+    public int candy(int[] ratings) {
+        //base case
+        if(ratings.length == 0) return 0;
+
+        int index = 1, min_candies = 1;
+        while(index < ratings.length){
+            //case 1 - if rating of current child is equal to the previous one
+            if(index < ratings.length && ratings[index] == ratings[index - 1]){
+                min_candies += 1;
+                index++;
+                continue;
+            }
+
+            //case 2 - if rating of the current child is greater than the previous one
+            int peak = 1;
+            while(index < ratings.length && ratings[index] > ratings[index - 1]){
+                peak++;
+                min_candies += peak;
+                index++;
+            }
+
+            //case 3 - if the rating of the current child is less than the previous one
+            int down = 1;
+            while(index < ratings.length && ratings[index] < ratings[index - 1]){
+                min_candies += down;
+                down += 1;
+                index++;
+            }
+
+            //case 4 - balance
+            if(peak < down){
+                min_candies += down - peak;
+            }
+        }
+
+        return min_candies;
+    }
+}
