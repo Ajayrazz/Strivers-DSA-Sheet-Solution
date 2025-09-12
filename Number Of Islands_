@@ -1,0 +1,39 @@
+class Solution {
+    public int numIslands(char[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        boolean[][] visited = new boolean[n][m];
+
+        int[] dx = {1, 0, 0, -1};
+        int[] dy = {0, -1, 1, 0};
+
+        int count = 0;
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(grid[i][j] == '1' && !visited[i][j]){
+                    count += 1;
+                    //perform dfs
+                    dfs(i, j, grid, visited, dx, dy);
+                }
+            }
+        }
+
+        return count;
+    }
+
+    //dfs function
+    public void dfs(int row, int col, char[][] grid, boolean[][] visited, int[] dx, int[] dy){
+        //visit
+        visited[row][col] = true;
+
+        for(int index = 0; index < 4; index++){
+            int nRow = row + dx[index];
+            int nCol = col + dy[index];
+
+            if(nRow >= 0 && nCol >= 0 && nRow < grid.length && nCol < grid[0].length && !visited[nRow][nCol] && grid[nRow][nCol] == '1'){
+                //call dfs'
+                dfs(nRow, nCol, grid, visited, dx, dy);
+            }
+        }
+    }
+}
