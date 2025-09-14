@@ -1,0 +1,36 @@
+class Solution {
+    public int totalNQueens(int n) {
+        int[] left_row = new int[n];
+        int[] lower_diagonal = new int[2 * n - 1];
+        int[] upper_diagonal = new int[2 * n - 1];
+
+        return Backtrack(0, n, left_row, lower_diagonal, upper_diagonal);
+    }
+
+    //Backtrack Function
+    public int Backtrack(int col, int n, int[] left_row, int[] lower_diagonal, int[] upper_diagonal){
+        //base case : All Queen Placed
+        if(col == n){
+            return 1;
+        }
+
+        int count = 0;
+        for(int row = 0; row < n; row++){
+            if(left_row[row] == 0 && lower_diagonal[row + col] == 0 && upper_diagonal[n - 1 + col - row] == 0){
+                //Place Queen
+                left_row[row] = 1;
+                lower_diagonal[row + col] = 1;
+                upper_diagonal[n - 1 + col - row] = 1;
+
+                count += Backtrack(col + 1, n, left_row, lower_diagonal, upper_diagonal);
+
+                //backtrack
+                left_row[row] = 0;
+                lower_diagonal[row + col] = 0;
+                upper_diagonal[n - 1 + col - row] = 0;
+            }
+        }
+
+        return count;
+    }
+}
