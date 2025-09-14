@@ -1,0 +1,39 @@
+class Solution {
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        Set<String> set = new HashSet<>(wordDict);
+        Map<Integer, List<String>> map = new HashMap<>();
+        return dfs(0, s, set, map);
+    }
+
+    //dfs function
+    public List<String> dfs(int start, String s, Set<String> set, Map<Integer, List<String>> map){
+        if(map.containsKey(start)){
+            return map.get(start);
+        }
+
+        List<String> result = new ArrayList<>(); 
+        //base case : reached the end of the string
+        if(start == s.length()){
+            result.add("");
+            return result;
+        }
+
+        for(int end = start + 1; end <= s.length(); end++){
+            String word = s.substring(start, end);
+            if(set.contains(word)){
+                List<String> sub_list = dfs(end, s, set, map);
+                for(String sub : sub_list){
+                    if(sub.isEmpty()){
+                        result.add(word);
+                    }
+                    else {
+                        result.add(word + " " + sub);
+                    }
+                }
+            }
+        }
+
+        map.put(start, result);
+        return result;
+    }
+}
