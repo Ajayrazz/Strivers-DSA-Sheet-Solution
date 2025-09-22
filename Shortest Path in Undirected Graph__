@@ -1,0 +1,29 @@
+class Solution {
+    public int[] shortestPath(ArrayList<ArrayList<Integer>> adj, int src) {
+        // code here
+        int V = adj.size();
+        int[] dist = new int[V];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
+        
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(src);
+        while(!queue.isEmpty()){
+            int node = queue.poll();
+            for(int adjNode : adj.get(node)){
+                if(dist[node] + 1 < dist[adjNode]){
+                    dist[adjNode] = 1 + dist[node];
+                    queue.add(adjNode);
+                }
+            }
+        }
+        
+        for(int i = 0; i < V; i++){
+            if(dist[i] == Integer.MAX_VALUE){
+                dist[i] = -1;
+            }
+        }
+        
+        return dist;
+    }
+}
