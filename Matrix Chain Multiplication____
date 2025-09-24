@@ -1,0 +1,37 @@
+class Solution {
+    static int matrixMultiplication(int arr[]) {
+        // code here
+        int n = arr.length;
+        int[][] memo = new int[n][n];
+        //fill memo with -1
+        for(int[] row : memo){
+            Arrays.fill(row, -1);
+        }
+        
+        return Helper(0, n - 1, arr, memo);
+    }
+    
+    //Helper Function
+    public static int Helper(int i, int j, int[] arr, int[][] memo){
+        //if there is only one matrix
+        if(i + 1 == j){
+            return 0;
+        }
+        
+        //if the result is already computed
+        if(memo[i][j] != -1){
+            return memo[i][j];
+        }
+        
+        int result = Integer.MAX_VALUE;
+        for(int k = i + 1; k < j; k++){
+            int current = Helper(i, k, arr, memo) + Helper(k, j, arr, memo) + arr[i] * arr[k] * arr[j];
+            //update result
+            result = Math.min(result, current);
+        }
+        
+        //update memo
+        memo[i][j] = result;
+        return result;
+    }
+}
