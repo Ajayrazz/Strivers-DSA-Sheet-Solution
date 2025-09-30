@@ -1,0 +1,27 @@
+class Solution {
+    public String countAndSay(int n) {
+        //base case
+        if(n == 1) return "1";
+
+        String str = countAndSay(n - 1);
+        StringBuilder sb = new StringBuilder();
+        char prev = str.charAt(0);
+        int count = 1;
+        int N = str.length(); 
+
+        for(int i = 1; i < N; i++){
+            char ch = str.charAt(i);
+            if(prev == ch){
+                count++;
+            }
+            else {
+                sb.append(count + "" + prev);
+                prev = ch;
+                count = 1;
+            }
+        }
+
+        sb.append(count + "" + prev);
+        return sb.toString();
+    }
+}
