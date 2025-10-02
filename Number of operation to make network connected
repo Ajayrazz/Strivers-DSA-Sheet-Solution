@@ -1,0 +1,92 @@
+class DisjointSet {
+    public List<Integer> parent = new ArrayList<>();
+    public List<Integer> rank = new ArrayList<>();
+    public List<Integer> size = new ArrayList<>();
+
+    public DisjointSet(int n){
+        for(int i = 0; i < n; i++){
+            rank.add(0);
+            size.add(1);
+            parent.add(i);
+        }
+    }
+
+    //find ultimate parent function
+    public int find_ulp(int node){
+        if(node == parent.get(node)){
+            return node;
+        }
+        int ulp = find_ulp(parent.get(node));
+        parent.set(node, ulp);
+        return parent.get(node);
+    }
+
+    //unionByRank function
+    public void unionByRank(int u, int v){
+        int ulp_u = find_ulp(u);
+        int ulp_v = find_ulp(v);
+        if(ulp_u == ulp_v){
+            return;
+        }
+        if(rank.get(ulp_u) < rank.get(ulp_v)){
+            parent.set(ulp_u, ulp_v);
+        }
+        else if(rank.get(ulp_v) < rank.get(ulp_u)){
+            parent.set(ulp_v, ulp_u);
+        }
+        else {
+            parent.set(ulp_v, ulp_u);
+            int rankU = rank.get(ulp_u);
+            rank.set(ulp_u, rankU + 1);
+        }
+    }
+
+    //unionBySize function
+    public void unionBySize(int u, int v){
+        int ulp_u = find_ulp(u);
+        int ulp_v = find_ulp(v);
+        if(ulp_u == ulp_v){
+            return;
+        }
+        if(size.get(ulp_u) < size.get(ulp_v)){
+            parent.set(ulp_u, ulp_v);
+            size.set(ulp_v, size.get(ulp_u) + size.get(ulp_v));
+        }
+        else {
+            parent.set(ulp_v, ulp_u);
+            size.set(ulp_u, size.get(ulp_u) + size.get(ulp_v));
+        }
+    }
+}
+
+class Solution {
+    public int makeConnected(int n, int[][] connections) {
+        //base case
+        if(connections.length < n - 1) return -1;
+
+        DisjointSet ds = new DisjointSet(n);
+        int components = 0;
+        for(int[] edge : connections){
+            int u = edge[0];
+            int v = edge[1];
+
+            if(ds.find_ulp(u) == ds.find_ulp(v)){
+                components++;
+            }
+            else {
+                ds.unionBySize(u, v);
+            }
+        }
+
+        int required = 0;
+        for(int i = 0; i < n; i++){
+            if(ds.find_ulp(i) == i){
+                required++;
+            }
+        }
+
+        int needed = required - 1;
+
+        return components >= needed ? needed : -1;
+    }
+}
