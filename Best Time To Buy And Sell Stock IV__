@@ -1,0 +1,38 @@
+class Solution {
+    public int maxProfit(int k, int[] prices) {
+        int n = prices.length;
+        int[][][] dp = new int[n][2][k + 1];
+        for(int[][] arr : dp){
+            for(int[] row : arr){
+                Arrays.fill(row, -1);
+            }
+        }
+
+        return maxProfitUtil(0, 0, k, prices, dp);
+    }
+
+    //maxProfitUtil function
+    public int maxProfitUtil(int index, int buy, int capacity, int[] prices, int[][][] dp){
+        //case 1
+        if(index == prices.length || capacity == 0) return 0;
+        //case 2
+        if(dp[index][buy][capacity] != -1) return dp[index][buy][capacity];
+
+        int profit = 0;
+        if(buy == 0){
+            int operation1 = maxProfitUtil(index + 1, 0, capacity, prices, dp); // do not transaction
+            int operation2 = -prices[index] + maxProfitUtil(index + 1, 1, capacity, prices, dp);    // buy the stocks
+            //update profit
+            profit = Math.max(operation1, operation2);
+        }
+        else {
+            int operation1 = maxProfitUtil(index + 1, 1, capacity, prices, dp); // do not transaction
+            int operation2 = prices[index] + maxProfitUtil(index + 1, 0, capacity - 1, prices, dp); // sell the stock
+            //update profti
+            profit = Math.max(operation1, operation2);
+        }
+
+        //update dp and return it
+        return dp[index][buy][capacity] = profit;
+    }
+}
