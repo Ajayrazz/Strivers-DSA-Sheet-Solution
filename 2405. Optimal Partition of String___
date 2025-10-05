@@ -1,0 +1,20 @@
+class Solution {
+    public int partitionString(String s) {
+        int left = 0, right = 0, count = 1;
+        Map<Character, Integer> map = new HashMap<>();
+
+        while(right < s.length()){
+            map.put(s.charAt(right), map.getOrDefault(s.charAt(right), 0) + 1);
+
+            if(map.get(s.charAt(right)) > 1){
+                count += 1;
+                map.clear();
+                map.put(s.charAt(right), 1);
+            }
+
+            right++;
+        }
+
+        return count;
+    }
+}
