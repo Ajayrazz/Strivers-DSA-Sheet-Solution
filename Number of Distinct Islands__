@@ -1,0 +1,41 @@
+// User function Template for Java
+
+class Solution {
+
+    int countDistinctIslands(int[][] grid) {
+        // Your Code here
+        int n = grid.length, m = grid[0].length;
+        boolean[][] visited = new boolean[n][m];
+        Set<String> set = new HashSet<>();
+        int[] dx = {1, 0, 0, -1};
+        int[] dy = {0, -1, 1, 0};
+        
+        for(int i = 0; i < grid.length; i++){
+            for(int j = 0; j < grid[0].length; j++){
+                if(grid[i][j] == 1 && !visited[i][j]){
+                    List<String> shape = new ArrayList<>();
+                    dfs(i, j, i, j, grid, visited, shape, dx, dy);
+                    set.add(String.join(",", shape));
+                }
+            }
+        }
+        
+        return set.size();
+    }
+    
+    //dfs function
+    public void dfs(int row, int col, int baseR, int baseC, int[][] grid, boolean[][] visited, List<String> shape, int[] dx, int[] dy){
+        //visit
+        visited[row][col] = true;
+        shape.add((row - baseR) + ":" + (col - baseC));
+        
+        for(int index = 0; index < 4; index++){
+            int nRow = row + dx[index];
+            int nCol = col + dy[index];
+            
+            if(nRow >= 0 && nRow < grid.length && nCol >= 0 && nCol < grid[0].length && grid[nRow][nCol] == 1 && !visited[nRow][nCol]){
+                dfs(nRow, nCol, baseR, baseC, grid, visited, shape, dx, dy);
+            }
+        }
+    }
+}
