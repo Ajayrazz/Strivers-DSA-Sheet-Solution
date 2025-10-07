@@ -1,0 +1,30 @@
+class Solution {
+    public List<Integer> partitionLabels(String s) {
+        int[] freq = new int[26];
+        for(char ch : s.toCharArray()){
+            freq[ch - 'a']++;
+        }
+
+        List<Integer> result = new ArrayList<>();
+        int prevEnd = 0;
+
+        for(int i = 0; i < s.length(); i++){
+            freq[s.charAt(i) - 'a']--;
+
+            if(isValid(prevEnd, i, s, freq)){
+                result.add(i - prevEnd + 1);
+                prevEnd = i + 1;
+            }
+        }
+
+        return result;
+    }
+
+    //isValid function
+    public boolean isValid(int start, int end, String s, int[] freq){
+        for(int i = start; i <= end; i++){
+            if(freq[s.charAt(i) - 'a'] != 0) return false;
+        }
+        return true;
+    }
+}
