@@ -1,0 +1,106 @@
+class DisjointSet {
+    public List<Integer> parent = new ArrayList<>();
+    public List<Integer> size = new ArrayList<>();
+    public List<Integer> rank = new ArrayList<>();
+
+    public DisjointSet(int n){
+        for(int i = 0; i < n; i++){
+            rank.add(0);
+            size.add(1);
+            parent.add(i);
+        }
+    }
+
+    //find_ulp function
+    public int find_ulp(int node){
+        if(node == parent.get(node)){
+            return node;
+        }
+        int ulp = find_ulp(parent.get(node));
+        parent.set(node, ulp);
+        return parent.get(node);
+    }
+
+    //unionByRank function
+    public void unionByRank(int u, int v){
+        int ulp_u = find_ulp(u);
+        int ulp_v = find_ulp(v);
+        if(ulp_u == ulp_v) return;
+        if(rank.get(ulp_u) < rank.get(ulp_v)){
+            parent.set(ulp_u, ulp_v);
+        }
+        else if(rank.get(ulp_v) < rank.get(ulp_u)){
+            parent.set(ulp_v, ulp_u);
+        }
+        else {
+            parent.set(ulp_v, ulp_u);
+            int rankU = rank.get(ulp_u);
+            rank.set(ulp_u, rankU + 1);
+        }
+    }
+
+    //unionBySize function
+    public void unionBySize(int u, int v){
+        int ulp_u = find_ulp(u);
+        int ulp_v = find_ulp(v);
+        if(ulp_u == ulp_v) return;
+        if(size.get(ulp_u) < size.get(ulp_v)){
+            parent.set(ulp_u, ulp_v);
+            size.set(ulp_v, size.get(ulp_u) + size.get(ulp_v));
+        }
+        else {
+            parent.set(ulp_v, ulp_u);
+            size.set(ulp_u, size.get(ulp_u) + size.get(ulp_v));
+        }
+    }
+}
+
+class Solution {
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        int n = accounts.size();
+        DisjointSet ds = new DisjointSet(n);
+        Map<String, Integer> map = new HashMap<>();
+        for(int i = 0; i < n; i++){
+            for(int j = 1; j < accounts.get(i).size(); j++){
+                String mail = accounts.get(i).get(j);
+                if(!map.containsKey(mail)){
+                    map.put(mail, i);
+                }
+                else {
+                    ds.unionBySize(i, map.get(mail));
+                }
+            }
+        }
+
+        List<String>[] mergedMail = new ArrayList[n];
+        for(int i = 0; i < n; i++){
+            mergedMail[i] = new ArrayList<>();
+        }
+        for(Map.Entry<String, Integer> it : map.entrySet()){
+            String mail = it.getKey();
+            int node = ds.find_ulp(it.getValue());
+            //add to mergedMail
+            mergedMail[node].add(mail);
+        }
+
+        List<List<String>> result = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            if(mergedMail[i].size() == 0){
+                continue;
+            }
+
+            //sort mergedMail
+            Collections.sort(mergedMail[i]);
+            List<String> temp = new ArrayList<>();
+            temp.add(accounts.get(i).get(0));
+            for(String str : mergedMail[i]){
+                temp.add(str);
+            }
+
+            //add temp to result
+            result.add(new ArrayList<>(temp));
+        }
+
+        return result;
+    }
+}
