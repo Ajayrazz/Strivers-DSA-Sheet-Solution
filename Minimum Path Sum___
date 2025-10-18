@@ -1,0 +1,31 @@
+class Solution {
+    public int minPathSum(int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        int[][] dp = new int[n][m];
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+        return minPathSumUtil(n - 1, m - 1, grid, dp);
+    }
+    
+    //minPathSumUtil function
+    public int minPathSumUtil(int i, int j, int[][] grid, int[][] dp){
+        //case 1
+        if(i == 0 && j == 0){
+            return grid[i][j];
+        }
+        //case 2 : case of invalid
+        if(i < 0 || j < 0){
+            return (int) Math.pow(10, 9);
+        }
+        //case 3
+        if(dp[i][j] != -1){
+            return dp[i][j];
+        }
+
+        int move_up = grid[i][j] + minPathSumUtil(i - 1, j, grid, dp);
+        int move_left = grid[i][j] + minPathSumUtil(i, j - 1, grid, dp);
+
+        return dp[i][j] = Math.min(move_up, move_left);
+    }
+}
