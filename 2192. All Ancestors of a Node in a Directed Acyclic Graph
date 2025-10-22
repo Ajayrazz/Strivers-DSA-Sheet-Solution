@@ -1,0 +1,57 @@
+class Pair {
+    int first;
+    int second;
+    public Pair(int first, int second) {
+        this.first = first;
+        this.second = second;
+    }
+}
+
+class Solution {
+    public List<List<Integer>> getAncestors(int n, int[][] edges) {
+        // Step 1: Build reversed adjacency list using Pair class
+        List<List<Pair>> adj = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            // Reverse edge direction: v -> u
+            adj.get(v).add(new Pair(u, 0));
+        }
+
+        // Step 2: For each node, find all ancestors using DFS
+        List<List<Integer>> result = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            Set<Integer> visited = new HashSet<>();
+            dfs(i, adj, visited);
+
+            List<Integer> ancestors = new ArrayList<>();
+            for (int node = 0; node < n; node++) {
+                if (node != i && visited.contains(node)) {
+                    ancestors.add(node);
+                }
+            }
+
+            // Sort ancestors in ascending order (as required by LeetCode problem)
+            Collections.sort(ancestors);
+            result.add(ancestors);
+        }
+
+        return result;
+    }
+
+    // Step 3: DFS function using adjacency list
+    private void dfs(int node, List<List<Pair>> adj, Set<Integer> visited) {
+        visited.add(node);
+        for (Pair neighbor : adj.get(node)) {
+            int next = neighbor.first;
+            if (!visited.contains(next)) {
+                dfs(next, adj, visited);
+            }
+        }
+    }
+}
