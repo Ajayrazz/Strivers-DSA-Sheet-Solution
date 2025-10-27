@@ -1,0 +1,91 @@
+/*
+class Node {
+    int data;
+    Node left, right;
+
+    public Node(int d) {
+        data = d;
+        left = right = null;
+    }
+}
+*/
+
+class Solution {
+    ArrayList<Integer> boundaryTraversal(Node root) {
+        // code here
+        if(root == null) return new ArrayList<>();
+        ArrayList<Integer> result = new ArrayList<>();
+        //if root is not a leaf node
+        if(!isLeaf(root)){
+            result.add(root.data);
+        }
+        
+        addLeftBoundary(root, result);
+        addLeaves(root, result);
+        addRightBoundary(root, result);
+        
+        return result;
+    }
+    
+    //isLeaf function
+    public boolean isLeaf(Node root){
+        return root.left == null && root.right == null;
+    }
+    
+    //addLeftBoundary function
+    public void addLeftBoundary(Node root, ArrayList<Integer> result){
+        Node current = root.left;
+        while(current != null){
+            if(!isLeaf(current)){
+                result.add(current.data);
+            }
+            
+            if(current.left != null){
+                current = current.left;
+            }
+            else {
+                current = current.right;
+            }
+        }
+    }
+    
+    //addRightBoundary function
+    public void addRightBoundary(Node root, ArrayList<Integer> result){
+        Node current = root.right;
+        ArrayList<Integer> temp = new ArrayList<>();
+        while(current != null){
+            if(!isLeaf(current)){
+                temp.add(current.data);
+            }
+            
+            if(current.right != null){
+                current = current.right;
+            }
+            else {
+                current = current.left;
+            }
+        }
+        
+        for(int i = temp.size() - 1; i >= 0; i--){
+            result.add(temp.get(i));
+        }
+    }
+    
+    //addLeaves function
+    public void addLeaves(Node root, ArrayList<Integer> result){
+        //base case
+        if(root == null) return;
+        //if root is a leaf node
+        if(isLeaf(root)){
+            result.add(root.data);
+        }
+        
+        if(root.left != null){
+            addLeaves(root.left, result);
+        }
+        
+        if(root.right != null){
+            addLeaves(root.right, result);
+        }
+    }
+}
