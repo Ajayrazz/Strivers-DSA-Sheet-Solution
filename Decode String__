@@ -1,0 +1,37 @@
+class Solution {
+    public String decodeString(String s) {
+        Stack<Integer> count_stack = new Stack<>();
+        Stack<StringBuilder> string_stack = new Stack<>();
+        StringBuilder current_string = new StringBuilder();
+        int k = 0;
+
+        for(char ch : s.toCharArray()){
+            if(Character.isDigit(ch)){
+                //Build the repeat count
+                k = k * 10 + (ch - '0');
+            }
+            else if(ch == '['){
+                //Push current number and string on stack
+                count_stack.push(k);
+                string_stack.push(current_string);
+                //Reset for the next substring
+                current_string = new StringBuilder();
+                k = 0;
+            }
+            else if(ch == ']'){
+                //Pop And Build The Repeated String
+                StringBuilder decoded_string = string_stack.pop();
+                int repeat_time = count_stack.pop();
+                while(repeat_time-- > 0){
+                    decoded_string.append(current_string);
+                }
+                current_string = decoded_string;
+            }
+            else {
+                current_string.append(ch);
+            }
+        }
+
+        return current_string.toString();
+    }
+}
