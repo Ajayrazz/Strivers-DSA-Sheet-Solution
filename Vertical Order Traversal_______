@@ -1,0 +1,71 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Tuple {
+    TreeNode node;
+    int row;
+    int col;
+    public Tuple(TreeNode node, int row, int col){
+        this.node = node;
+        this.row = row;
+        this.col = col;
+    }
+}
+
+class Solution {
+    public List<List<Integer>> verticalTraversal(TreeNode root) {
+        //base case
+        if(root == null) return new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+        Map<Integer, List<int[]>> map = new TreeMap<>();
+        Queue<Tuple> queue = new LinkedList<>();
+        queue.add(new Tuple(root, 0, 0));
+
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i = 0; i < size; i++){
+                Tuple current = queue.poll();
+
+                //add to map
+                map.putIfAbsent(current.col, new ArrayList<>());
+                map.get(current.col).add(new int[]{current.row, current.node.val});
+
+                //add children
+                if(current.node.left != null){
+                    queue.add(new Tuple(current.node.left, current.row + 1, current.col - 1));
+                }
+
+                if(current.node.right != null){
+                    queue.add(new Tuple(current.node.right, current.row + 1, current.col + 1));
+                }
+            }
+        }
+
+        for(List<int[]> column : map.values()){
+            //sort column
+            column.sort((a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]);
+
+            List<Integer> temp = new ArrayList<>();
+            for(int[] item : column){
+                temp.add(item[1]);
+            }
+
+            //add temp to result
+            result.add(new ArrayList<>(temp));
+        }
+
+        return result;
+    }
+}
