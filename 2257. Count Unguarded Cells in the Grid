@@ -1,0 +1,64 @@
+class Solution {
+    public int countUnguarded(int m, int n, int[][] guards, int[][] walls) {
+        char[][] board = new char[m][n];
+        for(char[] row : board){
+            Arrays.fill(row, '.');
+        }
+
+        //Fill Board With Gurads
+        for(int[] guard : guards){
+            int row = guard[0];
+            int col = guard[1];
+            board[row][col] = 'G';
+        }
+
+        //Fill Board With Walls
+        for(int[] wall : walls){
+            int row = wall[0];
+            int col = wall[1];
+            board[row][col] = 'W';
+        }
+
+        boolean[][] visited = new boolean[m][n];
+        int[] dx = {1, 0, 0, -1};
+        int[] dy = {0, -1, 1, 0};
+        //perform dfs
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(board[i][j] == 'G' && !visited[i][j]){
+                    //dfs
+                    dfs(i, j, board, visited, dx, dy);
+                }
+            }
+        }
+
+        int count = 0;
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(board[i][j] == '.' && !visited[i][j]){
+                    count += 1;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    //dfs function
+    public void dfs(int row, int col, char[][] board, boolean[][] visited, int[] dx, int[] dy){
+        //visit
+        visited[row][col] = true;
+
+        for (int index = 0; index < 4; index++) {
+            int nRow = row + dx[index];
+            int nCol = col + dy[index];
+            while (nRow >= 0 && nRow < board.length && nCol >= 0 && nCol < board[0].length && board[nRow][nCol] != 'W' && board[nRow][nCol] != 'G') {
+                if (board[nRow][nCol] == '.') {
+                    board[nRow][nCol] = 'S'; // S = seen
+                }
+                nRow += dx[index];
+                nCol += dy[index];
+            }
+        }
+    }
+}
