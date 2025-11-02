@@ -1,0 +1,25 @@
+class Solution {
+    public int sumSubarrayMins(int[] arr) {
+        int n = arr.length;
+        int mod = (int)1e9 + 7;
+        Stack<Integer> stack = new Stack<>();
+        
+        long ans = 0;
+        long[] dp = new long[n]; // dp[i] = sum of subarray minimums ending at i
+        
+        for (int i = 0; i < n; i++) {
+            // Pop elements greater than current
+            while (!stack.isEmpty() && arr[stack.peek()] > arr[i]) {
+                stack.pop();
+            }
+            
+            int j = stack.isEmpty() ? -1 : stack.peek();
+            // If no smaller element to the left, arr[i] contributes (i+1) times
+            dp[i] = (j == -1 ? (long)arr[i] * (i + 1)  : dp[j] + (long)arr[i] * (i - j)) % mod; 
+            ans = (ans + dp[i]) % mod;
+            stack.push(i);
+        }
+        
+        return (int)ans;
+    }
+}
