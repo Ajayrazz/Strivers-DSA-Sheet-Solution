@@ -1,0 +1,51 @@
+class Solution {
+    public int longestStrChain(String[] words) {
+        //sort words on the basis of length in increasing order
+        Arrays.sort(words, Comparator.comparing(String::length));
+        int n = words.length;
+        int[][] dp = new int[n][n + 1];
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+        return LSCUtil(0, -1, words, dp);
+    }
+
+    //LSCUtil function
+    public int LSCUtil(int index, int prev_index, String[] words, int[][] dp){
+        //case 1
+        if(index == words.length) return 0;
+        //case 2
+        if(dp[index][prev_index + 1] != -1) return dp[index][prev_index + 1];
+
+        int notTake = LSCUtil(index + 1, prev_index, words, dp);
+        int take  = 0;
+        if(prev_index == -1 || isPredecessor(words[prev_index], words[index])){
+            take = 1 + LSCUtil(index + 1, index, words, dp);
+        }
+
+        //update dp
+        return dp[index][prev_index + 1] = Math.max(take, notTake);
+    }
+
+    //isPredecessor function
+    public boolean isPredecessor(String prev, String current){
+        //base case
+        if(prev.length() + 1 != current.length()) return false;
+        boolean isSkipped = false;
+        int i = 0, j = 0;
+        while(i < prev.length() && j < current.length()){
+            if(prev.charAt(i) == current.charAt(j)){
+                i++;
+                j++;
+            }
+            else if(!isSkipped){
+                isSkipped = true;
+                j++;
+            }
+            else {
+                return false;
+            }
+        }
+        return true;
+    }
+}
