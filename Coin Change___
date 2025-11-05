@@ -1,0 +1,32 @@
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int n = coins.length;
+        int[][] dp = new int[n][amount + 1];
+        for(int[] row : dp){
+            Arrays.fill(row, -1);
+        }
+        int ans = coinChangeUtil(n - 1, amount, coins, dp);
+        if(ans >= (int) Math.pow(10, 9)) return -1;
+        return ans;
+    }
+
+    //coinChangeUtil function
+    public int coinChangeUtil(int index, int amount, int[] coins, int[][] dp){
+        //case 1
+        if(index == 0){
+            if(amount % coins[index] == 0) return amount / coins[index];
+            return (int) Math.pow(10, 9);
+        }
+        //case 2
+        if(dp[index][amount] != -1) return dp[index][amount];
+
+        int notTake = coinChangeUtil(index - 1, amount, coins, dp);
+        int take = (int) Math.pow(10, 9);
+        if(coins[index] <= amount){
+            take = 1 + coinChangeUtil(index, amount - coins[index], coins, dp);
+        }
+
+        //update dp
+        return dp[index][amount] = Math.min(take, notTake);
+    }
+}
