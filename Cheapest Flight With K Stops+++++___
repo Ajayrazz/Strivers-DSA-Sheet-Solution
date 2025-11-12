@@ -1,0 +1,68 @@
+class Pair {
+    int first;
+    int second;
+    public Pair(int first, int second){
+        this.first = first;
+        this.second = second;
+    }
+}
+
+class Tuple {
+    int first;
+    int second;
+    int third;
+    public Tuple(int first, int second, int third){
+        this.first = first;
+        this.second = second;
+        this.third = third;
+    }
+}
+
+class Solution {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        List<List<Pair>> adj = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            adj.add(new ArrayList<>());
+        }
+
+        for(int[] edge : flights){
+            int u = edge[0];
+            int v = edge[1];
+            int wt = edge[2];
+
+            adj.get(u).add(new Pair(v, wt));       // directed weighted graph
+        }
+
+        int[] dist = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
+
+        Queue<Tuple> queue = new LinkedList<>();
+        queue.add(new Tuple(0, src, 0));    // steps , node , distance
+
+        while(!queue.isEmpty()){
+            int steps = queue.peek().first;
+            int node = queue.peek().second;
+            int distance = queue.peek().third;
+            queue.poll();
+
+            //check condition
+            if(steps > k){
+                continue;
+            }
+
+            for(Pair current : adj.get(node)){
+                int adjNode = current.first;
+                int costs = current.second;
+
+                if(distance + costs < dist[adjNode]){
+                    //update dist
+                    dist[adjNode] = distance + costs;
+                    queue.add(new Tuple(steps + 1, adjNode, dist[adjNode]));
+                }
+            }
+        }
+
+        return dist[dst] == Integer.MAX_VALUE ? -1 : dist[dst];
+    }
+}
