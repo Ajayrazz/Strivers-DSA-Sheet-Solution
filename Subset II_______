@@ -1,0 +1,27 @@
+class Solution {
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        //base case
+        if(nums == null || nums.length == 0) return new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+        //sort 
+        Arrays.sort(nums);
+        Helper(0, nums, result, new ArrayList<>());
+        return result;
+    }
+
+    //Helper Function
+    public void Helper(int index, int[] nums, List<List<Integer>> result, List<Integer> current){
+        //add current to result
+        result.add(new ArrayList<>(current));
+        
+        for(int i = index; i < nums.length; i++){
+            if(i > index && nums[i] == nums[i - 1]){
+                continue;
+            }
+            //add to current
+            current.add(nums[i]);
+            Helper(i + 1, nums, result, current);
+            current.remove(current.get(current.size() - 1));
+        }
+    }
+}
