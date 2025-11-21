@@ -1,0 +1,27 @@
+class Solution {
+    public int countPalindromicSubsequence(String s) {
+        Set<Character> uniqueChars = new HashSet<>();
+        for (char ch : s.toCharArray()) {
+            uniqueChars.add(ch);
+        }
+        int totalCount = 0;
+        for (char currentChar : uniqueChars) {
+            int firstIndex = -1;
+            int lastIndex = 0;
+            for (int idx = 0; idx < s.length(); idx++) {
+                if (s.charAt(idx) == currentChar) {
+                    if (firstIndex == -1) {
+                        firstIndex = idx;
+                    }
+                    lastIndex = idx;
+                }
+            }
+            Set<Character> middleChars = new HashSet<>();
+            for (int idx = firstIndex + 1; idx < lastIndex; idx++) {
+                middleChars.add(s.charAt(idx));
+            }
+            totalCount += middleChars.size();
+        }
+        return totalCount;
+    }
+}
