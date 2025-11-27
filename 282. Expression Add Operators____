@@ -1,0 +1,39 @@
+class Solution {
+    public List<String> addOperators(String num, int target) {
+        List<String> result = new ArrayList<>();
+        Helper(num, target, result, 0, "", 0, 0);
+        return result;
+    }
+
+    //Helper Function
+    public void Helper(String num, int target, List<String> result, int index, String currentPath, long evalValue, long lastOperand){
+        //base case
+        if(index == num.length()){
+            if(evalValue == target){
+                result.add(currentPath);
+            }
+            return;
+        }
+
+        for(int i = index; i < num.length(); i++){
+            if(i > index && num.charAt(index) == '0'){
+                break;
+            }
+
+            String operandStr = num.substring(index, i + 1);
+            long currentOperand = Long.parseLong(operandStr);
+
+            if(index == 0){
+                Helper(num, target, result, i + 1, operandStr, currentOperand, currentOperand);
+            }
+            else {
+                //add '+' operator
+                Helper(num, target, result, i + 1, currentPath + "+" + operandStr, evalValue + currentOperand, currentOperand);
+                //add '-' operator
+                Helper(num, target, result, i + 1, currentPath + "-" + operandStr, evalValue - currentOperand, -currentOperand);
+                //add '*' operator
+                Helper(num, target, result, i + 1, currentPath + "*" + operandStr, evalValue - lastOperand + lastOperand * currentOperand, lastOperand * currentOperand);
+            }
+        }
+    }
+}
