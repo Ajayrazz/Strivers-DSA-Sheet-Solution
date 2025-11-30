@@ -1,0 +1,78 @@
+class State {
+    int x;
+    int y;
+    public State(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+}
+
+class Solution {
+    public boolean canMeasureWater(int x, int y, int target) {
+        //base case
+        if(x + y == target) return true;
+        if(x + y < target) return false;
+        //case : where we can't measure odd capacity using even capacity jugs
+        if((x % 2 == 0) && (y % 2 == 0) && (target % 2 != 0)) return false;
+
+        HashSet<String> visited = new HashSet<>();
+        State start = new State(0, 0);
+        Queue<State> queue = new LinkedList<>();
+        queue.add(start);
+
+        //bfs : don't add already visited state
+        while(!queue.isEmpty()){
+            int n = queue.size();
+            State current = queue.poll();
+
+            if(current.x + current.y == target) return true;
+            //add to visited
+            visited.add(current.x + "," + current.y);
+            
+            int newX, newY;
+            //Case 1 : Pour water from x to y
+            newX = current.x - Math.min(current.x, y - current.y);
+            newY = current.y + Math.min(current.x, y - current.y);
+            if(!visited.contains(newX + "," + newY)){
+                queue.add(new State(newX, newY));
+            }
+
+            //Case 2 : Pour water from y to x
+            newX = current.x + Math.min(x - current.x, current.y);
+            newY = current.y - Math.min(x - current.x, current.y);
+            if(!visited.contains(newX + "," + newY)){
+                queue.add(new State(newX, newY));
+            }
+
+            //Case 3 : empty x
+            newX = 0;
+            newY = current.y;
+            if(!visited.contains(newX + "," + newY)){
+                queue.add(new State(newX, newY));
+            }
+
+            //Case 4 : empty y
+            newY = 0;
+            newX = current.x;
+            if(!visited.contains(newX + "," + newY)){
+                queue.add(new State(newX, newY));
+            }
+
+            //Case 5 : fill x
+            newX = x;
+            newY = current.y;
+            if(!visited.contains(newX + "," + newY)){
+                queue.add(new State(newX, newY));
+            }
+
+            //Case 6 : fill y
+            newX = current.x;
+            newY = y;
+            if(!visited.contains(newX + "," + newY)){
+                queue.add(new State(newX, newY));
+            }
+        }
+
+        return false;
+    }
+}
