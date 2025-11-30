@@ -1,0 +1,55 @@
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+    public Node next;
+
+    public Node() {}
+    
+    public Node(int _val) {
+        val = _val;
+    }
+
+    public Node(int _val, Node _left, Node _right, Node _next) {
+        val = _val;
+        left = _left;
+        right = _right;
+        next = _next;
+    }
+};
+*/
+
+class Solution {
+    public Node connect(Node root) {
+        //base case
+        if(root == null) return root;
+
+        //case 1 : Find the next child (leftmost child) in the next levels
+        Node nextChild = findNext(root.next);
+
+        if(root.right != null){
+            root.right.next = nextChild;
+        }
+
+        if(root.left != null){
+            root.left.next = (root.right != null) ? root.right : nextChild;
+        }
+
+        connect(root.right);
+        connect(root.left);
+
+        return root;
+    }
+
+    //findNext function
+    public Node findNext(Node node){
+        while(node != null){
+            if(node.left != null) return node.left;
+            if(node.right != null) return node.right;
+            node = node.next;
+        }
+        return null;
+    }
+}
