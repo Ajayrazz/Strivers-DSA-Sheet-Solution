@@ -1,0 +1,40 @@
+class Solution {
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        int V = graph.length;
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        // Correct adjacency list for directed graph
+        for (int i = 0; i < V; i++) {
+            for (int node : graph[i]) {
+                adj.get(i).add(node);
+            }
+        }
+
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        
+        // Start path from source (0)
+        path.add(0);
+        
+        dfs(0, V - 1, adj, path, result);
+        return result;
+    }
+
+    private void dfs(int src, int dest, List<List<Integer>> adj, List<Integer> path,List<List<Integer>> result) {
+        // If reached target
+        if (src == dest) {
+            result.add(new ArrayList<>(path));
+            return;
+        }
+
+        // Explore all neighbors
+        for (int next : adj.get(src)) {
+            path.add(next);
+            dfs(next, dest, adj, path, result);
+            path.remove(path.size() - 1); // backtrack
+        }
+    }
+}
