@@ -1,0 +1,42 @@
+class Solution {
+    public ArrayList<Integer> jobSequencing(int[] deadline, int[] profit) {
+        // code here
+        int n = deadline.length;
+        int[][] jobs = new int[n][2];
+        for(int i = 0; i < n; i++){
+            jobs[i][0] = deadline[i];
+            jobs[i][1] = profit[i];
+        }
+        
+        //sort jobs based on profit in decreasing order
+        Arrays.sort(jobs, (a, b) -> Integer.compare(b[1], a[1]));
+        
+        int max_deadline = 0;
+        for(int num : deadline){
+            max_deadline = Math.max(max_deadline, num);
+        }
+        
+        int[] slots = new int[max_deadline + 1];
+        Arrays.fill(slots, -1);
+        
+        int count_jobs = 0, max_profit = 0;
+        for(int i = 0; i < n; i++){
+            int current_deadline = jobs[i][0];
+            int current_profit = jobs[i][1];
+            
+            for(int j = current_deadline; j > 0; j--){
+                if(slots[j] == -1){
+                    slots[j] = 1;
+                    count_jobs += 1;
+                    max_profit += current_profit;
+                    break;
+                }
+            }
+        }
+        
+        ArrayList<Integer> result = new ArrayList<>();
+        result.add(count_jobs);
+        result.add(max_profit);
+        return result;
+    }
+}
