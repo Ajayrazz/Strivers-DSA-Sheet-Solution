@@ -1,0 +1,52 @@
+class Solution {
+    public List<String> validateCoupons(String[] code, String[] businessLine, boolean[] isActive) {
+
+        List<String> electronics = new ArrayList<>();
+        List<String> grocery = new ArrayList<>();
+        List<String> pharmacy = new ArrayList<>();
+        List<String> restaurant = new ArrayList<>();
+
+        int n = code.length;
+        for (int i = 0; i < n; i++) {
+            String c = code[i];
+            String b = businessLine[i];
+
+            if (!isActive[i]) continue;
+            if (!isValidCode(c)) continue;
+
+            if (b.equals("electronics")) {
+                electronics.add(c);
+            } else if (b.equals("grocery")) {
+                grocery.add(c);
+            } else if (b.equals("pharmacy")) {
+                pharmacy.add(c);
+            } else if (b.equals("restaurant")) {
+                restaurant.add(c);
+            }
+        }
+
+        Collections.sort(electronics);
+        Collections.sort(grocery);
+        Collections.sort(pharmacy);
+        Collections.sort(restaurant);
+
+        List<String> result = new ArrayList<>();
+        result.addAll(electronics);
+        result.addAll(grocery);
+        result.addAll(pharmacy);
+        result.addAll(restaurant);
+
+        return result;
+    }
+
+    private boolean isValidCode(String s) {
+        if (s == null || s.length() == 0) return false;
+
+        for (char ch : s.toCharArray()) {
+            if (!Character.isLetterOrDigit(ch) && ch != '_') {
+                return false;
+            }
+        }
+        return true;
+    }
+}
