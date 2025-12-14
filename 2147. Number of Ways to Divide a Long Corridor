@@ -1,0 +1,34 @@
+class Solution {
+    private final int M = 1000000007;
+    private int solve(int pos, int used, String str, Map<Pair<Integer, Integer>, Integer> memo) {
+        if (pos == str.length()) {
+            return used == 2 ? 1 : 0;
+        }
+        Pair<Integer, Integer> key = new Pair<>(pos, used);
+        if (memo.containsKey(key)) {
+            return memo.get(key);
+        }
+        int ways = 0;
+        char ch = str.charAt(pos);
+        if (used == 2) {
+            if (ch == 'S') {
+                ways = solve(pos + 1, 1, str, memo);
+            } else {
+                ways = (solve(pos + 1, 0, str, memo) + solve(pos + 1, 2, str, memo)) % M;
+            }
+        } else {
+            if (ch == 'S') {
+                ways = solve(pos + 1, used + 1, str, memo);
+            } else {
+                ways = solve(pos + 1, used, str, memo);
+            }
+        }
+        memo.put(key, ways);
+        return ways;
+    }
+
+    public int numberOfWays(String corridor) {
+        Map<Pair<Integer, Integer>, Integer> memo = new HashMap<>();
+        return solve(0, 0, corridor, memo);
+    }
+}
