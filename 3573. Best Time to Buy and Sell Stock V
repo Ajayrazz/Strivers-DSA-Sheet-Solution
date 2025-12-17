@@ -1,0 +1,55 @@
+class Solution {
+    public long maximumProfit(int[] prices, int k) {
+        int n = prices.length;
+        long[][][] dp = new long[n][3][k + 1];
+        for (long[][] arr : dp) {
+            for (long[] row : arr) {
+                Arrays.fill(row, Long.MIN_VALUE);
+            }
+        }
+        return maxProfitUtil(0, 0, k, prices, dp);
+    }
+
+    // maxProfitUtil function
+    public long maxProfitUtil(int index, int buy, int capacity, int[] prices, long[][][] dp) {
+        // Base cases
+        if (index == prices.length) {
+            if (buy == 0) return 0;
+            return Long.MIN_VALUE / 4; // unfinished transaction
+        }
+
+        if (capacity == 0) {
+            if (buy == 0) return 0;
+            return Long.MIN_VALUE / 4;
+        }
+
+        if (dp[index][buy][capacity] != Long.MIN_VALUE)
+            return dp[index][buy][capacity];
+
+        long profit = 0;
+
+        // buy == 0 -> no position
+        if (buy == 0) {
+            long operation1 = maxProfitUtil(index + 1, 0, capacity, prices, dp);
+            long operation2 = -prices[index] + maxProfitUtil(index + 1, 1, capacity, prices, dp);
+            long operation3 = prices[index] + maxProfitUtil(index + 1, 2, capacity, prices, dp);
+
+            profit = Math.max(operation1, Math.max(operation2, operation3));
+        }
+        // buy == 1 -> holding normal buy
+        else if (buy == 1) {
+            long operation1 = maxProfitUtil(index + 1, 1, capacity, prices, dp);
+            long operation2 = prices[index] + maxProfitUtil(index + 1, 0, capacity - 1, prices, dp);
+
+            profit = Math.max(operation1, operation2);
+        }
+        // buy == 2 -> holding short sell
+        else {
+            long operation1 = maxProfitUtil(index + 1, 2, capacity, prices, dp);
+            long operation2 = -prices[index] + maxProfitUtil(index + 1, 0, capacity - 1, prices, dp);
+
+            profit = Math.max(operation1, operation2);
+        }
+        return dp[index][buy][capacity] = profit;
+    }
+}
