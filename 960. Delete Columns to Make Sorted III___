@@ -1,0 +1,26 @@
+class Solution {
+    public int minDeletionSize(String[] strs) {
+        int cols = strs[0].length();
+        int[] longest = new int[cols];
+        Arrays.fill(longest, 1);
+        for (int i = cols - 2; i >= 0; i--) {
+            for (int j = i + 1; j < cols; j++) {
+                boolean valid = true;
+                for (String s : strs) {
+                    if (s.charAt(i) > s.charAt(j)) {
+                        valid = false;
+                        break;
+                    }
+                }
+                if (valid) {
+                    longest[i] = Math.max(longest[i], 1 + longest[j]);
+                }
+            }
+        }
+        int maxKeep = 0;
+        for (int len : longest) {
+            maxKeep = Math.max(maxKeep, len);
+        }
+        return cols - maxKeep;
+    }
+}
