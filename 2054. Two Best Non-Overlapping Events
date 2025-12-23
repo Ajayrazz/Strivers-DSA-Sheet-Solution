@@ -1,0 +1,36 @@
+class Solution {
+    public int maxTwoEvents(int[][] eventList) {
+        Arrays.sort(eventList, Comparator.comparingInt(e -> e[0]));
+        int totalEvents = eventList.length;
+        int[] maxValueFromRight = new int[totalEvents];
+        maxValueFromRight[totalEvents - 1] = eventList[totalEvents - 1][2];
+        for (int i = totalEvents - 2; i >= 0; i--) {
+            maxValueFromRight[i] = Math.max(
+                maxValueFromRight[i + 1],
+                eventList[i][2]
+            );
+        }
+        int result = 0;
+        for (int i = 0; i < totalEvents; i++) {
+            int firstEventValue = eventList[i][2];
+            int endTime = eventList[i][1];
+            int nextIndex = findNextEventIndex(i + 1, totalEvents, endTime,
+eventList);
+            int secondEventValue = (nextIndex < totalEvents) ? maxValueFromRight[nextIndex] : 0;
+            result = Math.max(result, firstEventValue + secondEventValue);
+        }
+        return result;
+    }
+
+    private int findNextEventIndex(int left, int right, int endTime, int[][] eventList
+    ) {
+        if (left >= right) {
+            return right;
+        }
+        int mid = left + (right - left) / 2;
+        if (eventList[mid][0] > endTime) {
+            return findNextEventIndex(left, mid, endTime, eventList);
+        }
+        return findNextEventIndex(mid + 1, right, endTime, eventList);
+    }
+}
