@@ -1,0 +1,24 @@
+// User function Template for Java
+
+import java.util.Arrays;
+
+class Solution {
+    static int solve(int bt[]) {
+        int n = bt.length;
+        
+        // Step 1: Sort burst times (SJF)
+        Arrays.sort(bt);
+        
+        int waitingTime = 0;
+        int totalWaitingTime = 0;
+        
+        // Step 2: Calculate total waiting time
+        for (int i = 1; i < n; i++) {
+            waitingTime += bt[i - 1];
+            totalWaitingTime += waitingTime;
+        }
+        
+        // Step 3: Return average waiting time (floored)
+        return totalWaitingTime / n;
+    }
+}
