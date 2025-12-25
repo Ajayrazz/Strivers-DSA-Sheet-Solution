@@ -1,0 +1,31 @@
+class Solution {
+    public int beautifulSubsets(int[] nums, int k) {
+        return backtrack(nums, k, 0, new HashMap<>());
+    }
+
+    private int backtrack(int[] nums, int k, int index, Map<Integer, Integer> freq) {
+        if (index == nums.length) {
+            // If we have selected at least one element
+            return freq.isEmpty() ? 0 : 1;
+        }
+
+        // Option 1: Skip current element
+        int count = backtrack(nums, k, index + 1, freq);
+
+        int num = nums[index];
+
+        // Option 2: Take current element if valid
+        if (!freq.containsKey(num - k) && !freq.containsKey(num + k)) {
+            freq.put(num, freq.getOrDefault(num, 0) + 1);
+            count += backtrack(nums, k, index + 1, freq);
+
+            // Backtrack
+            freq.put(num, freq.get(num) - 1);
+            if (freq.get(num) == 0) {
+                freq.remove(num);
+            }
+        }
+
+        return count;
+    }
+}
