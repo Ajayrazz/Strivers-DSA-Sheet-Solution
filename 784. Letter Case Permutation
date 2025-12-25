@@ -1,0 +1,37 @@
+class Solution {
+    public List<String> letterCasePermutation(String s) {
+        List<String> result = new ArrayList<>();
+        backtrack(s.toCharArray(), 0, new StringBuilder(), result);
+        return result;
+    }
+    
+    //backtrack function
+    private void backtrack(char[] arr, int index, StringBuilder path, List<String> result) {
+        // Base case: reached end of string
+        if (index == arr.length) {
+            result.add(path.toString());
+            return;
+        }
+        
+        char ch = arr[index];
+        
+        // If digit, only one choice
+        if (Character.isDigit(ch)) {
+            path.append(ch);
+            backtrack(arr, index + 1, path, result);
+            path.deleteCharAt(path.length() - 1); // backtrack
+        } 
+        // If letter, two choices: lowercase & uppercase
+        else {
+            // lowercase
+            path.append(Character.toLowerCase(ch));
+            backtrack(arr, index + 1, path, result);
+            path.deleteCharAt(path.length() - 1);
+            
+            // uppercase
+            path.append(Character.toUpperCase(ch));
+            backtrack(arr, index + 1, path, result);
+            path.deleteCharAt(path.length() - 1);
+        }
+    }
+}
