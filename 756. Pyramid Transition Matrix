@@ -1,0 +1,43 @@
+class Solution {
+    private int[][] transitions;
+    private Set<Long> visited;
+    public boolean pyramidTransition(String base, List<String> rules) {
+        transitions = new int[7][7];
+        for (String rule : rules) {
+            int x = rule.charAt(0) - 'A';
+            int y = rule.charAt(1) - 'A';
+            int z = rule.charAt(2) - 'A';
+            transitions[x][y] |= (1 << z);
+        }
+        visited = new HashSet<>();
+        int size = base.length();
+        int[][] pyramid = new int[size][size];
+        int idx = 0;
+        for (char ch : base.toCharArray()) {
+            pyramid[size - 1][idx++] = ch - 'A';
+        }
+        return build(pyramid, 0L, size - 1, 0);
+    }
+
+    private boolean build(int[][] pyramid, long state, int level, int pos) {
+        if (level == 1 && pos == 1) {
+            return true;
+        }
+        if (pos == level) {
+            if (visited.contains(state)) return false;
+            visited.add(state);
+            return build(pyramid, 0L, level - 1, 0);
+        }
+        int possible = transitions[pyramid[level][pos]][pyramid[level][pos + 1]];
+        for (int block = 0; block < 7; block++) {
+            if (((possible >> block) & 1) != 0) {
+                pyramid[level - 1][pos] = block;
+                if (build(pyramid, state * 8 + (block + 1), level, pos + 1)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+}
