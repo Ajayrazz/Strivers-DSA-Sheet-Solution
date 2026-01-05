@@ -1,0 +1,25 @@
+class Solution {
+    public long maxMatrixSum(int[][] matrix) {
+        long result = 0;
+        int lowest = Integer.MAX_VALUE;
+        int neg = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            int[] row = matrix[i];
+            for (int j = 0; j < row.length; j++) {
+                int value = row[j];
+                int absolute = value < 0 ? -value : value;
+                result = result + absolute;
+                if (value < 0) {
+                    neg = neg + 1;
+                }
+                if (absolute < lowest) {
+                    lowest = absolute;
+                }
+            }
+        }
+        if (neg % 2 != 0) {
+            result = result - (2L * lowest);
+        }
+        return result;
+    }
+}
