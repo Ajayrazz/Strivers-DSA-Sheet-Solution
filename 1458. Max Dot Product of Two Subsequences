@@ -1,0 +1,32 @@
+class Solution {
+    public int maxDotProduct(int[] nums1, int[] nums2) {
+        int n = nums1.length;
+        int m = nums2.length;
+        int NEG_INF = -1_000_000_000;
+
+        int[][] dp = new int[n + 1][m + 1];
+        for (int i = 0; i <= n; i++) {
+            Arrays.fill(dp[i], NEG_INF);
+        }
+
+        int result = computeMaxDot(nums1, nums2, 0, 0, dp, NEG_INF);
+        return result;
+    }
+
+    private int computeMaxDot(int[] a, int[] b, int i, int j, int[][] dp, int NEG_INF) {
+        if (i == a.length || j == b.length) {
+            return NEG_INF; 
+        }
+
+        if (dp[i][j] != NEG_INF) {
+            return dp[i][j];
+        }
+
+        int pickBoth = a[i] * b[j] + Math.max(0, computeMaxDot(a, b, i + 1, j + 1, dp, NEG_INF));
+        int skipA = computeMaxDot(a, b, i + 1, j, dp, NEG_INF);
+        int skipB = computeMaxDot(a, b, i, j + 1, dp, NEG_INF);
+
+        dp[i][j] = Math.max(Math.max(pickBoth, skipA), skipB);
+        return dp[i][j];
+    }
+}
