@@ -1,0 +1,20 @@
+class Solution {
+    public int minTimeToVisitAllPoints(int[][] points) {
+        int totalTime = 0;
+
+        for (int index = 0; index < points.length - 1; index++) {
+            int startX = points[index][0];
+            int startY = points[index][1];
+
+            int endX = points[index + 1][0];
+            int endY = points[index + 1][1];
+
+            totalTime += Math.max(
+                Math.abs(endX - startX),
+                Math.abs(endY - startY)
+            );
+        }
+
+        return totalTime;
+    }
+}
