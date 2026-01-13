@@ -1,0 +1,43 @@
+class Solution {
+    public double separateSquares(int[][] squares) {
+        double answerY = 0.0, totalSquareArea = 0.0, lowestY = Double.MAX_VALUE, highestY = Double.MIN_VALUE;
+        for (int[] square : squares) {
+            double sideLength = square[2];
+            totalSquareArea += sideLength * sideLength;
+            lowestY = Math.min(lowestY, square[1]);
+            highestY = Math.max(highestY, square[1] + sideLength);
+        }
+        double halfArea = totalSquareArea / 2.0;
+        double left = lowestY;
+        double right = highestY;
+
+        while (left < right) {
+            if (right - left < 1e-5) {
+                break;
+            }
+            double midY = (left + right) / 2.0;
+            if (calculateAreaBelow(midY, squares) < halfArea) {
+                left = midY;
+            } else {
+                answerY = midY;
+                right = midY;
+            }
+        }
+        return answerY;
+    }
+
+    private double calculateAreaBelow(double currentY, int[][] squares) {
+        double accumulatedArea = 0.0;
+        for (int[] square : squares) {
+            double squareBottomY = square[1];
+            double sideLength = square[2];
+            if (currentY >= squareBottomY + sideLength) {
+                accumulatedArea += sideLength * sideLength;
+            }
+            else if (currentY > squareBottomY) {
+                accumulatedArea += sideLength * (currentY - squareBottomY);
+            }
+        }
+        return accumulatedArea;
+    }
+}
