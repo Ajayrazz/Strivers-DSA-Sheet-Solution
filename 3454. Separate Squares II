@@ -1,0 +1,131 @@
+class Solution {
+    static class TreeNode {
+        long rangeStart, rangeEnd;
+        int coverageCount;
+        long coveredLength;
+        TreeNode leftChild, rightChild;
+
+        public TreeNode(long start, long end) {
+            this.rangeStart = start;
+            this.rangeEnd = end;
+        }
+    }
+
+    static class SegmentTree {
+        TreeNode root;
+
+        public SegmentTree(long maxRange) {
+            root = new TreeNode(0, maxRange);
+        }
+
+        public void updateRange(long updateStart, long updateEnd, int delta) {
+            update(0, root.rangeEnd, updateStart, updateEnd, root, delta);
+        }
+
+        public long getCoveredLength() {
+            return root.coveredLength;
+        }
+
+        private void update(long nodeStart, long nodeEnd, long updateStart, long updateEnd, TreeNode node, int delta) {
+            if (nodeEnd <= updateStart || updateEnd <= nodeStart) return;
+
+            if (updateStart <= nodeStart && nodeEnd <= updateEnd) {
+                node.coverageCount += delta;
+                recalculate(node, nodeStart, nodeEnd);
+                return;
+            }
+
+            long mid = createChildren(nodeStart, nodeEnd, node);
+            update(nodeStart, mid, updateStart, updateEnd, node.leftChild, delta);
+            update(mid, nodeEnd, updateStart, updateEnd, node.rightChild, delta);
+
+            recalculate(node, nodeStart, nodeEnd);
+        }
+
+        private void recalculate(TreeNode node, long start, long end) {
+            if (node.coverageCount > 0) {
+                node.coveredLength = end - start;
+            } else {
+                node.coveredLength =
+                        (node.leftChild != null ? node.leftChild.coveredLength : 0)
+                      + (node.rightChild != null ? node.rightChild.coveredLength : 0);
+            }
+        }
+
+        private long createChildren(long start, long end, TreeNode node) {
+            long mid = start + (end - start) / 2;
+            if (node.leftChild == null) node.leftChild = new TreeNode(start, mid);
+            if (node.rightChild == null) node.rightChild = new TreeNode(mid, end);
+            return mid;
+        }
+    }
+
+    static class SweepEvent implements Comparable<SweepEvent> {
+        long xStart, xEnd, y;
+        boolean isClosing;
+
+        public SweepEvent(long xStart, long xEnd, long y, boolean isClosing) {
+            this.xStart = xStart;
+            this.xEnd = xEnd;
+            this.y = y;
+            this.isClosing = isClosing;
+        }
+
+        @Override
+        public int compareTo(SweepEvent other) {
+            if (this.y != other.y) return Long.compare(this.y, other.y);
+            return this.isClosing ? -1 : 1;
+        }
+    }
+
+    private static final long MAX_COORD = 2_000_000_001L;
+    SegmentTree segmentTree;
+
+    public Solution() {
+        segmentTree = new SegmentTree(MAX_COORD);
+    }
+
+    public double separateSquares(int[][] squares) {
+        List<SweepEvent> events = new ArrayList<>();
+        for (int[] square : squares) {
+            long x1 = square[0], y1 = square[1], size = square[2];
+            events.add(new SweepEvent(x1, x1 + size, y1, false));
+            events.add(new SweepEvent(x1, x1 + size, y1 + size, true));
+        }
+        Collections.sort(events);
+        double totalArea = computeTotalArea(events);
+        segmentTree = new SegmentTree(MAX_COORD);
+        return findSplitLine(events, totalArea);
+    }
+
+    private double computeTotalArea(List<SweepEvent> events) {
+        long previousY = 0, activeWidth = 0;
+        double area = 0;
+        for (SweepEvent event : events) {
+            long currentY = event.y;
+            area += activeWidth * (currentY - previousY);
+            if (!event.isClosing) segmentTree.updateRange(event.xStart, event.xEnd, 1);
+            else segmentTree.updateRange(event.xStart, event.xEnd, -1);
+            activeWidth = segmentTree.getCoveredLength();
+            previousY = currentY;
+        }
+        return area;
+    }
+
+    private double findSplitLine(List<SweepEvent> events, double totalArea) {
+        double previousY = 0, accumulatedArea = 0, activeWidth = 0;
+        for (SweepEvent event : events) {
+            double currentY = event.y;
+            accumulatedArea += activeWidth * (currentY - previousY);
+            if (accumulatedArea >= totalArea / 2) {
+                if (accumulatedArea == totalArea / 2) return currentY;
+                return currentY - (accumulatedArea - totalArea / 2) / activeWidth;
+            }
+            previousY = currentY;
+            if (!event.isClosing) segmentTree.updateRange(event.xStart, event.xEnd, 1);
+            else segmentTree.updateRange(event.xStart, event.xEnd, -1);
+            activeWidth = segmentTree.getCoveredLength();
+        }
+        return -1;
+    }
+}
