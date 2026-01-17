@@ -1,0 +1,13 @@
+class Solution {
+    public long largestSquareArea(int[][] lowerLeft, int[][] upperRight) {
+        long maxSquareSide = 0;
+        int rectCount = lowerLeft.length;
+        for (int a = 0; a < rectCount; a++)
+            for (int b = a + 1; b < rectCount; b++) {
+                int overlapWidth  = Math.min(upperRight[a][0], upperRight[b][0]) - Math.max(lowerLeft[a][0],  lowerLeft[b][0]);
+                int overlapHeight = Math.min(upperRight[a][1], upperRight[b][1]) - Math.max(lowerLeft[a][1],  lowerLeft[b][1]);
+                maxSquareSide = Math.max(maxSquareSide, Math.min(overlapWidth, overlapHeight));
+        }
+        return maxSquareSide * maxSquareSide;
+    }
+}
