@@ -1,0 +1,65 @@
+class Solution {
+    public int largestMagicSquare(int[][] grid) {
+        int r = grid.length, c = grid[0].length;
+        int[][] rowPref = buildRowPrefix(grid, r, c);
+        int[][] colPref = buildColPrefix(grid, r, c);
+        for (int size = Math.min(r, c); size >= 2; size--) {
+            for (int i = 0; i + size <= r; i++) {
+                for (int j = 0; j + size <= c; j++) {
+                    if (isMagic(grid, rowPref, colPref, i, j, size)) {
+                        return size;
+                    }
+                }
+            }
+        }
+        return 1;
+    }
+
+    //buildRowPrefix function
+    private int[][] buildRowPrefix(int[][] grid, int r, int c) {
+        int[][] pref = new int[r][c];
+        for (int i = 0; i < r; i++) {
+            pref[i][0] = grid[i][0];
+            for (int j = 1; j < c; j++) {
+                pref[i][j] = pref[i][j - 1] + grid[i][j];
+            }
+        }
+        return pref;
+    }
+
+    //buildColPrefix function
+    private int[][] buildColPrefix(int[][] grid, int r, int c) {
+        int[][] pref = new int[r][c];
+        for (int j = 0; j < c; j++) {
+            pref[0][j] = grid[0][j];
+            for (int i = 1; i < r; i++) {
+                pref[i][j] = pref[i - 1][j] + grid[i][j];
+            }
+        }
+        return pref;
+    }
+
+    //isMagic function
+    private boolean isMagic(int[][] grid, int[][] rowPref, int[][] colPref, int x, int y, int size
+    ) {
+        int target = rowPref[x][y + size - 1] - (y > 0 ? rowPref[x][y - 1] : 0);
+
+        for (int i = x; i < x + size; i++) {
+            int rowSum = rowPref[i][y + size - 1] - (y > 0 ? rowPref[i][y - 1] : 0);
+            if (rowSum != target) return false;
+        }
+
+        for (int j = y; j < y + size; j++) {
+            int colSum = colPref[x + size - 1][j] - (x > 0 ? colPref[x - 1][j] : 0);
+            if (colSum != target) return false;
+        }
+
+        int d1 = 0, d2 = 0;
+        for (int k = 0; k < size; k++) {
+            d1 += grid[x + k][y + k];
+            d2 += grid[x + k][y + size - 1 - k];
+        }
+
+        return d1 == target && d2 == target;
+    }
+}
