@@ -1,0 +1,27 @@
+class Solution {
+    public int maxSideLength(int[][] mat, int threshold) {
+        int height = mat.length, width = mat[0].length;
+        int[][] sum = new int[height + 1][width + 1];
+
+        for (int r = 0; r < height; r++)
+            for (int c = 0; c < width; c++)
+                sum[r + 1][c + 1] = sum[r][c + 1] + sum[r + 1][c] - sum[r][c] + mat[r][c];
+
+        int low = 0, high = Math.min(height, width);
+
+        while (low < high) {
+            int size = (low + high + 1) / 2;
+            if (exists(sum, height, width, size, threshold)) low = size;
+            else high = size - 1;
+        }
+        return low;
+    }
+
+    private boolean exists(int[][] sum, int h, int w, int len, int threshold) {
+        for (int r = len; r <= h; r++)
+            for (int c = len; c <= w; c++)
+                if (sum[r][c] - sum[r - len][c] - sum[r][c - len] + sum[r - len][c - len] <= threshold)
+                    return true;
+        return false;
+    }
+}
