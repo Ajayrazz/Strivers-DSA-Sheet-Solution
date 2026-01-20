@@ -1,0 +1,20 @@
+class Solution {
+    public int[] minBitwiseArray(List<Integer> nums) {
+        int size = nums.size();
+        int[] result = new int[size];
+        for (int i = 0; i < size; i++) {
+            result[i] = findCandidate(nums.get(i));
+        }
+        return result;
+    }
+
+    //findCandidate function
+    private int findCandidate(int target) {
+        for (int x = 1; x < target; x++) {
+            if ((x | (x + 1)) == target) {
+                return x;
+            }
+        }
+        return -1;
+    }
+}
