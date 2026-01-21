@@ -1,0 +1,23 @@
+class Solution {
+    public int[] minBitwiseArray(List<Integer> nums) {
+        int[] answer = new int[nums.size()];
+
+        for (int i = 0; i < nums.size(); i++) {
+            answer[i] = findCandidate(nums.get(i));
+        }
+
+        return answer;
+    }
+
+    private int findCandidate(int number) {
+        int bit = 1;
+        int result = -1;
+
+        while ((number & bit) != 0) {
+            result = number - bit;
+            bit <<= 1;
+        }
+
+        return result;
+    }
+}
