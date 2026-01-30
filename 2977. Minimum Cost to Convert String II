@@ -1,0 +1,94 @@
+class TrieNode {
+    TrieNode[] next = new TrieNode[26];
+    int nodeId = -1;
+}
+
+class Solution {
+
+    private static final int BIG = Integer.MAX_VALUE / 2;
+
+    private int insertWord(TrieNode curr, String word, int[] idCounter) {
+        for (char c : word.toCharArray()) {
+            int idx = c - 'a';
+            if (curr.next[idx] == null) {
+                curr.next[idx] = new TrieNode();
+            }
+            curr = curr.next[idx];
+        }
+        if (curr.nodeId == -1) {
+            curr.nodeId = ++idCounter[0];
+        }
+        return curr.nodeId;
+    }
+
+    public long minimumCost(
+        String source,
+        String target,
+        String[] original,
+        String[] changed,
+        int[] cost
+    ) {
+        int len = source.length();
+        int rules = original.length;
+
+        TrieNode trieRoot = new TrieNode();
+        int[] idGen = { -1 };
+
+        int[][] dist = new int[rules * 2][rules * 2];
+        for (int i = 0; i < rules * 2; i++) {
+            Arrays.fill(dist[i], BIG);
+            dist[i][i] = 0;
+        }
+
+        for (int i = 0; i < rules; i++) {
+            int from = insertWord(trieRoot, original[i], idGen);
+            int to = insertWord(trieRoot, changed[i], idGen);
+            dist[from][to] = Math.min(dist[from][to], cost[i]);
+        }
+
+        int totalNodes = idGen[0] + 1;
+
+        // Floyd–Warshall
+        for (int mid = 0; mid < totalNodes; mid++) {
+            for (int i = 0; i < totalNodes; i++) {
+                for (int j = 0; j < totalNodes; j++) {
+                    dist[i][j] = Math.min(dist[i][j], dist[i][mid] + dist[mid][j]);
+                }
+            }
+        }
+
+        long[] dp = new long[len];
+        Arrays.fill(dp, -1);
+
+        for (int start = 0; start < len; start++) {
+            if (start > 0 && dp[start - 1] == -1) continue;
+
+            long prevCost = (start == 0) ? 0 : dp[start - 1];
+
+            if (source.charAt(start) == target.charAt(start)) {
+                dp[start] = (dp[start] == -1) ? prevCost : Math.min(dp[start], prevCost);
+            }
+
+            TrieNode srcNode = trieRoot;
+            TrieNode tgtNode = trieRoot;
+
+            for (int end = start; end < len; end++) {
+                srcNode = srcNode.next[source.charAt(end) - 'a'];
+                tgtNode = tgtNode.next[target.charAt(end) - 'a'];
+
+                if (srcNode == null || tgtNode == null) break;
+
+                if (srcNode.nodeId != -1 && tgtNode.nodeId != -1
+                        && dist[srcNode.nodeId][tgtNode.nodeId] != BIG) {
+
+                    long newCost = prevCost + dist[srcNode.nodeId][tgtNode.nodeId];
+                    if (dp[end] == -1 || newCost < dp[end]) {
+                        dp[end] = newCost;
+                    }
+                }
+            }
+        }
+
+        return dp[len - 1];
+    }
+}
