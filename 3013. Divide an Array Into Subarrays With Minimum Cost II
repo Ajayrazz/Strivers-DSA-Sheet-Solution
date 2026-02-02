@@ -1,0 +1,76 @@
+class Solution {
+    public long minimumCost(int[] nums, int k, int dist) {
+        long firstVal = nums[0];
+        int need = k - 1;
+        if (need <= 0)
+            return firstVal;
+
+        TreeMap<Integer, Integer> leftSet = new TreeMap<>();
+        TreeMap<Integer, Integer> rightSet = new TreeMap<>();
+
+        long[] leftSum = new long[]{0};
+        int[] leftCount = new int[]{0};
+
+        Runnable balance = () -> {
+            while (leftCount[0] > need) {
+                int val = leftSet.lastKey();
+                leftSum[0] -= val;
+                leftCount[0]--;
+
+                leftSet.merge(val, -1, Integer::sum);
+                if (leftSet.get(val) == 0)
+                    leftSet.remove(val);
+                rightSet.merge(val, 1, Integer::sum);
+            }
+            while (leftCount[0] < need && !rightSet.isEmpty()) {
+                int val = rightSet.firstKey();
+                leftSum[0] += val;
+                leftCount[0]++;
+
+                rightSet.merge(val, -1, Integer::sum);
+                if (rightSet.get(val) == 0)
+                    rightSet.remove(val);
+                leftSet.merge(val, 1, Integer::sum);
+            }
+        };
+
+        int range = dist + 1;
+        for (int idx = 1; idx <= range && idx < nums.length; idx++) {
+            leftSet.merge(nums[idx], 1, Integer::sum);
+            leftSum[0] += nums[idx];
+            leftCount[0]++;
+        }
+        balance.run();
+
+        long answer = firstVal + leftSum[0];
+
+        for (int start = 1, end = range + 1; end < nums.length; start++, end++) {
+            int removeVal = nums[start];
+            if (leftSet.containsKey(removeVal)) {
+                leftSum[0] -= removeVal;
+                leftCount[0]--;
+                leftSet.merge(removeVal, -1, Integer::sum);
+                if (leftSet.get(removeVal) == 0)
+                    leftSet.remove(removeVal);
+            } else {
+                rightSet.merge(removeVal, -1, Integer::sum);
+                if (rightSet.get(removeVal) == 0)
+                    rightSet.remove(removeVal);
+            }
+
+            int addVal = nums[end];
+            if (leftSet.isEmpty() || addVal <= leftSet.lastKey()) {
+                leftSet.merge(addVal, 1, Integer::sum);
+                leftSum[0] += addVal;
+                leftCount[0]++;
+            } else {
+                rightSet.merge(addVal, 1, Integer::sum);
+            }
+
+            balance.run();
+            answer = Math.min(answer, firstVal + leftSum[0]);
+        }
+
+        return answer;
+    }
+}
