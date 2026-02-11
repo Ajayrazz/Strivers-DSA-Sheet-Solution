@@ -1,0 +1,81 @@
+class SegmentTree {
+    public int size;
+    public int[] total, minimum, maximum;
+    SegmentTree(int length) {
+        size = length;
+        total = new int[4 * size];
+        minimum = new int[4 * size];
+        maximum = new int[4 * size];
+    }
+    void merge(int index) {
+        int leftChild = index * 2;
+        int rightChild = index * 2 + 1;
+        total[index] = total[leftChild] + total[rightChild];
+        minimum[index] = Math.min(minimum[leftChild], total[leftChild] + minimum[rightChild]);
+        maximum[index] = Math.max(maximum[leftChild], total[leftChild] + maximum[rightChild]);
+    }
+
+    void modify(int position, int value) {
+        modify(1, 0, size - 1, position, value);
+    }
+
+    void modify(int index, int start, int end, int position, int value) {
+        if (start == end) {
+            total[index] = value;
+            minimum[index] = value;
+            maximum[index] = value;
+            return;
+        }
+        int mid = (start + end) / 2;
+        if (position <= mid)
+            modify(index * 2, start, mid, position, value);
+        else
+            modify(index * 2 + 1, mid + 1, end, position, value);
+        merge(index);
+    }
+
+    boolean check(int index, int prefixBefore, int targetValue) {
+        int required = targetValue - prefixBefore;
+        return minimum[index] <= required && required <= maximum[index];
+    }
+
+    int queryRightmost(int targetValue) {
+        return queryRightmost(1, 0, size - 1, 0, targetValue);
+    }
+
+    int queryRightmost(int index, int start, int end, int prefixBefore, int targetValue) {
+        if (!check(index, prefixBefore, targetValue))
+            return -1;
+        if (start == end)
+            return start;
+        int mid = (start + end) / 2;
+        int leftChild = index * 2;
+        int rightChild = index * 2 + 1;
+        int newPrefix = prefixBefore + total[leftChild];
+        if (check(rightChild, newPrefix, targetValue))
+            return queryRightmost(rightChild, mid + 1, end, newPrefix, targetValue);
+        return queryRightmost(leftChild, start, mid, prefixBefore, targetValue);
+    }
+}
+
+class Solution {
+    public int longestBalanced(int[] nums) {
+        int length = nums.length;
+        SegmentTree tree = new SegmentTree(length);
+        HashMap<Integer, Integer> firstPosition = new HashMap<>();
+        int maxLen = 0;
+        for (int leftIndex = length - 1; leftIndex >= 0; leftIndex--) {
+            int currentValue = nums[leftIndex];
+            Integer previous = firstPosition.get(currentValue);
+            if (previous != null)
+                tree.modify(previous, 0);
+            firstPosition.put(currentValue, leftIndex);
+            tree.modify(leftIndex, (currentValue % 2 == 0) ? 1 : -1);
+            int rightIndex = tree.queryRightmost(0);
+            if (rightIndex >= leftIndex)
+                maxLen = Math.max(maxLen, rightIndex - leftIndex + 1);
+        }
+
+        return maxLen;
+    }
+}
