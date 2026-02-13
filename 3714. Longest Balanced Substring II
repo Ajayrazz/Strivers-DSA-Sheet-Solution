@@ -1,0 +1,67 @@
+import java.util.*;
+
+class Solution {
+
+    public int longestBalanced(String s) {
+        int n = s.length();
+        int bestLength = 0;
+        for (int i = 0; i < n;) {
+            int j = i + 1;
+            while (j < n && s.charAt(j) == s.charAt(i)) j++;
+            bestLength = Math.max(bestLength, j - i);
+            i = j;
+        }
+        bestLength = Math.max(bestLength, evaluatePair(s, 'a', 'b'));
+        bestLength = Math.max(bestLength, evaluatePair(s, 'a', 'c'));
+        bestLength = Math.max(bestLength, evaluatePair(s, 'b', 'c'));
+        bestLength = Math.max(bestLength, evaluateTriple(s));
+        return bestLength;
+    }
+
+    private int evaluateTriple(String text) {
+        int n = text.length();
+        int maxLen = 0;
+        Map<Long, Integer> seen = new HashMap<>();
+        seen.put(combine(0, 0), -1);
+        int totalA = 0, totalB = 0, totalC = 0;
+        for (int i = 0; i < n; i++) {
+            char ch = text.charAt(i);
+            if (ch == 'a') totalA++;
+            else if (ch == 'b') totalB++;
+            else if (ch == 'c') totalC++;
+            int diff1 = totalA - totalB;
+            int diff2 = totalA - totalC;
+            long state = combine(diff1, diff2);
+            if (seen.containsKey(state)) maxLen = Math.max(maxLen, i - seen.get(state));
+            else seen.put(state, i);
+        }
+        return maxLen;
+    }
+
+    private int evaluatePair(String text, char first, char second) {
+        int n = text.length();
+        int answer = 0;
+        for (int start = 0; start < n;) {
+            if (text.charAt(start) != first && text.charAt(start) != second) {
+                start++;
+                continue;
+            }
+            Map<Integer, Integer> firstIndex = new HashMap<>();
+            firstIndex.put(0, start - 1);
+            int balance = 0;
+            int end = start;
+            while (end < n && (text.charAt(end) == first || text.charAt(end) == second)) {
+                balance += (text.charAt(end) == first) ? 1 : -1;
+                if (firstIndex.containsKey(balance)) answer = Math.max(answer, end - firstIndex.get(balance));
+                else firstIndex.put(balance, end);
+                end++;
+            }
+            start = end + 1;
+        }
+        return answer;
+    }
+
+    private long combine(int x, int y) {
+        return (((long)x) << 32) | (y & 0xffffffffL);
+    }
+}
