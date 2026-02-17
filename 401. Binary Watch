@@ -1,0 +1,27 @@
+class Solution {
+    public List<String> readBinaryWatch(int turnedOn) {
+        List<String> output = new ArrayList<>();
+        generateTimes(0, 0, 0, turnedOn, output);
+        return output;
+    }
+
+    //generateTimes function
+    private void generateTimes(int index, int hours, int minutes, int ledsLeft, List<String> output) {
+        if (hours > 11 || minutes > 59) return;
+
+        if (ledsLeft == 0) {
+            output.add(hours + ":" + (minutes < 10 ? "0" : "") + minutes);
+            return;
+        }
+
+        if (index == 10) return;
+
+        if (index < 4) {
+            generateTimes(index + 1, hours + (1 << index), minutes, ledsLeft - 1, output);
+        } else {
+            generateTimes(index + 1, hours, minutes + (1 << (index - 4)), ledsLeft - 1, output);
+        }
+
+        generateTimes(index + 1, hours, minutes, ledsLeft, output);
+    }
+}
