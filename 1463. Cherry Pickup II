@@ -1,0 +1,43 @@
+class Solution {
+    public int cherryPickup(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        int[][][] dp = new int[n][m][m];
+        for (int[][] layer : dp){
+            for (int[] row : layer){
+                Arrays.fill(row, -1);
+            }
+        }
+        return solve(grid, 0, 0, m - 1, dp, n, m);
+    }
+
+    private int solve(int[][] grid, int r, int c1, int c2, int[][][] dp, int n, int m) {
+        // Out of bounds
+        if (c1 < 0 || c1 >= m || c2 < 0 || c2 >= m) return Integer.MIN_VALUE;
+
+        // Last row
+        if (r == n - 1) {
+            if (c1 == c2){
+                return grid[r][c1];
+            } else {
+                return grid[r][c1] + grid[r][c2];
+            }
+        }
+
+        if (dp[r][c1][c2] != -1) return dp[r][c1][c2];
+
+        int curr = grid[r][c1];
+        if (c1 != c2) curr += grid[r][c2];
+
+        int best = Integer.MIN_VALUE;
+        // Try all 9 moves
+        for (int d1 = -1; d1 <= 1; d1++){
+            for (int d2 = -1; d2 <= 1; d2++){
+                best = Math.max(best,
+                        solve(grid, r + 1, c1 + d1, c2 + d2, dp, n, m));
+            }
+        }
+        //update dp
+        return dp[r][c1][c2] = curr + best;
+    }
+}
