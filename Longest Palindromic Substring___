@@ -1,0 +1,33 @@
+class Solution {
+    public String getLongestPal(String s) {
+        // code here
+        String ans = "";
+        for(int i = 0; i < s.length(); i++){
+            String odd = expandAlongRadius(s, i, i);
+            String even = expandAlongRadius(s, i, i + 1);
+            
+            //check odd
+            if(odd.length() > ans.length()){
+                ans = odd;
+            }
+            
+            //check even
+            if(even.length() > ans.length()){
+                ans = even;
+            }
+        }
+        
+        return ans;
+    }
+    
+    //expandAlongRadius function
+    public String expandAlongRadius(String s, int left, int right){
+        while(left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)){
+            left--;
+            right++;
+        }
+        
+        String result = s.substring(left + 1, right);
+        return result;
+    }
+}
