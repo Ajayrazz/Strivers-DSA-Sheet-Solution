@@ -1,0 +1,28 @@
+class Solution {
+    public int[] sortByBits(int[] input) {
+        Integer[] values = Arrays.stream(input).boxed().toArray(Integer[]::new);
+        Arrays.sort(values, new BitComparator());
+        return Arrays.stream(values).mapToInt(v -> v).toArray();
+    }
+}
+
+class BitComparator implements Comparator<Integer> {
+    private int countSetBits(int value) {
+        int count = 0;
+        while (value != 0) {
+            count += (value & 1);
+            value >>= 1;
+        }
+        return count;
+    }
+
+    @Override
+    public int compare(Integer x, Integer y) {
+        int bitsX = countSetBits(x);
+        int bitsY = countSetBits(y);
+        if (bitsX == bitsY) {
+            return Integer.compare(x, y);
+        }
+        return Integer.compare(bitsX, bitsY);
+    }
+}
