@@ -1,0 +1,37 @@
+class Solution {
+    public int minOperations(String s, int k) {
+        int len = s.length();
+        int zeroCount = 0;
+        int[] steps = new int[len + 1];
+        Arrays.fill(steps, Integer.MAX_VALUE);
+        List<TreeSet<Integer>> paritySets = new ArrayList<>();
+        paritySets.add(new TreeSet<>());
+        paritySets.add(new TreeSet<>());
+        for (int idx = 0; idx <= len; idx++) {
+            paritySets.get(idx % 2).add(idx);
+            if (idx < len && s.charAt(idx) == '0') {
+                zeroCount++;
+            }
+        }
+        Queue<Integer> bfsQueue = new ArrayDeque<>();
+        bfsQueue.offer(zeroCount);
+        steps[zeroCount] = 0;
+        paritySets.get(zeroCount % 2).remove(zeroCount);
+        while (!bfsQueue.isEmpty()) {
+            int current = bfsQueue.poll();
+            int leftBound = Math.max(k - len + current, 0);
+            int rightBound = Math.min(current, k);
+            int startNode = current + k - 2 * rightBound;
+            int endNode   = current + k - 2 * leftBound;
+            TreeSet<Integer> candidateSet = paritySets.get(startNode % 2);
+            Integer next = candidateSet.ceiling(startNode);
+            while (next != null && next <= endNode) {
+                steps[next] = steps[current] + 1;
+                bfsQueue.offer(next);
+                candidateSet.remove(next);
+                next = candidateSet.ceiling(startNode);
+            }
+        }
+        return steps[0] == Integer.MAX_VALUE ? -1 : steps[0];
+    }
+}
