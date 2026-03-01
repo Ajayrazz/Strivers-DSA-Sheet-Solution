@@ -1,0 +1,11 @@
+class Solution {
+    public int minPartitions(String n) {
+        int result = 0;
+        int idx = 0;
+        while(idx < n.length()){
+            result = Math.max(result, n.charAt(idx) - '0');
+            idx++;
+        }
+        return result;
+    }
+}
