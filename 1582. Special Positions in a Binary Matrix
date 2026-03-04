@@ -1,0 +1,34 @@
+class Solution {
+    public int numSpecial(int[][] mat) {
+        int count = 0;
+        for(int i = 0; i < mat.length; i++){
+            for(int j = 0; j < mat[0].length; j++){
+                if(mat[i][j] == 1){
+                    if(checkRow(i, j, mat) && checkCol(i, j, mat)){
+                        count += 1;
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+
+    //checkRow function
+    public boolean checkRow(int row, int col, int[][] mat){
+        for(int i = 0; i < mat.length; i++){
+            if(i == row) continue;
+            if(mat[i][col] == 1) return false;
+        }
+        return true;
+    }
+
+    //checkCol function
+    public boolean checkCol(int row, int col, int[][] mat){
+        for(int j = 0; j < mat[0].length; j++){
+            if(j == col) continue;
+            if(mat[row][j] == 1) return false;
+        }
+        return true;
+    }
+}
