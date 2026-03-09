@@ -1,0 +1,37 @@
+class Solution {
+    static final long MOD = 1000000007;
+    long[][][] memo;
+    int limit;
+    public int numberOfStableArrays(int zero, int one, int limit) {
+        this.limit = limit;
+        memo = new long[zero + 1][one + 1][2];
+        for (int i = 0; i <= zero; i++) {
+            for (int j = 0; j <= one; j++) {
+                memo[i][j][0] = -1;
+                memo[i][j][1] = -1;
+            }
+        }
+
+        long ans = (solve(zero, one, 0) + solve(zero, one, 1)) % MOD;
+        return (int) ans;
+    }
+
+    private long solve(int z, int o, int last) {
+        if (z == 0 && o == 0) return 1;
+        if (memo[z][o][last] != -1) return memo[z][o][last];
+        long ans = 0;
+        if (last == 0) { 
+            // last placed was 0 → place ones
+            for (int k = 1; k <= Math.min(limit, o); k++) {
+                ans = (ans + solve(z, o - k, 1)) % MOD;
+            }
+        } else { 
+            // last placed was 1 → place zeros
+            for (int k = 1; k <= Math.min(limit, z); k++) {
+                ans = (ans + solve(z - k, o, 0)) % MOD;
+            }
+        }
+
+        return memo[z][o][last] = ans;
+    }
+}
