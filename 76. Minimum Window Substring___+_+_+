@@ -1,0 +1,41 @@
+class Solution {
+    public String minWindow(String s, String t) {
+        int[] mapS = new int[256];
+        int[] mapT = new int[256];
+
+        for(char ch : t.toCharArray()){
+            mapT[ch]++;
+        }
+
+        int left = 0, right = 0, min_len = Integer.MAX_VALUE, start = 0;
+        while(right < s.length()){
+            mapS[s.charAt(right)]++;
+            right++;
+
+            //shrink window if valid
+            while(isDesirable(mapS, mapT)){
+                if(right - left < min_len){
+                    min_len = right - left;
+                    start = left;
+                }
+
+                //remove left character
+                mapS[s.charAt(left)]--;
+                left++;
+            }
+        }
+
+        if(min_len == Integer.MAX_VALUE) return "";
+        return s.substring(start, start + min_len);
+    }
+
+    //isDesirable function
+    public boolean isDesirable(int[] mapS, int[] mapT){
+        for(int i = 0; i < 256; i++){
+            if(mapT[i] > mapS[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+}
