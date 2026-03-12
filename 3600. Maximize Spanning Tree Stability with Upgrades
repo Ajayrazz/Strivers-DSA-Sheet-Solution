@@ -1,0 +1,106 @@
+class DisjointSet {
+    public List<Integer> parent = new ArrayList<>();
+    public List<Integer> size = new ArrayList<>();
+
+    public DisjointSet(int n){
+        for(int i = 0; i < n; i++){
+            size.add(1);
+            parent.add(i);
+        }
+    }
+
+    public int find_ulp(int node){
+        if(node == parent.get(node)) return node;
+        int ulp = find_ulp(parent.get(node));
+        parent.set(node, ulp);
+        return parent.get(node);
+    }
+
+    public void unionBySize(int u, int v){
+        int ulp_u = find_ulp(u);
+        int ulp_v = find_ulp(v);
+        if(ulp_u == ulp_v) return;
+
+        if(size.get(ulp_u) < size.get(ulp_v)){
+            parent.set(ulp_u, ulp_v);
+            size.set(ulp_v, size.get(ulp_u) + size.get(ulp_v));
+        } else {
+            parent.set(ulp_v, ulp_u);
+            size.set(ulp_u, size.get(ulp_u) + size.get(ulp_v));
+        }
+    }
+}
+
+class Solution {
+    private static final int MAX_LIMIT = 200000;
+    public int maxStability(int nodes, int[][] edgeList, int boostLimit) {
+        if(edgeList.length < nodes - 1) return -1;
+        List<int[]> requiredEdges = new ArrayList<>();
+        List<int[]> optionalEdges = new ArrayList<>();
+        for(int[] edge : edgeList){
+            if(edge[3] == 1) requiredEdges.add(edge);
+            else optionalEdges.add(edge);
+        }
+
+        if(requiredEdges.size() > nodes - 1) return -1;
+        optionalEdges.sort((a,b) -> b[2] - a[2]);
+        DisjointSet baseDSU = new DisjointSet(nodes);
+        int edgesUsedInitially = 0;
+        int minMandatoryStability = MAX_LIMIT;
+
+        for(int[] edge : requiredEdges){
+            int src = edge[0];
+            int dest = edge[1];
+            int stability = edge[2];
+            if(baseDSU.find_ulp(src) == baseDSU.find_ulp(dest) || edgesUsedInitially == nodes - 1){
+                return -1;
+            }
+
+            baseDSU.unionBySize(src, dest);
+            edgesUsedInitially++;
+            minMandatoryStability = Math.min(minMandatoryStability, stability);
+        }
+
+        int left = 0;
+        int right = minMandatoryStability;
+        int result = -1;
+
+        while(left < right){
+            int midStability = left + (right - left + 1) / 2;
+            DisjointSet tempDSU = new DisjointSet(nodes);
+            tempDSU.parent = new ArrayList<>(baseDSU.parent);
+            tempDSU.size = new ArrayList<>(baseDSU.size);
+            int edgesUsed = edgesUsedInitially;
+            int boostedEdges = 0;
+            for(int[] edge : optionalEdges){
+                int u = edge[0];
+                int v = edge[1];
+                int stability = edge[2];
+                if(tempDSU.find_ulp(u) == tempDSU.find_ulp(v)) continue;
+                if(stability >= midStability){
+                    tempDSU.unionBySize(u, v);
+                    edgesUsed++;
+                }
+                else if(boostedEdges < boostLimit && stability * 2 >= midStability){
+                    boostedEdges++;
+                    tempDSU.unionBySize(u, v);
+                    edgesUsed++;
+                }
+                else{
+                    break;
+                }
+
+                if(edgesUsed == nodes - 1) break;
+            }
+
+            if(edgesUsed != nodes - 1){
+                right = midStability - 1;
+            } else {
+                result = midStability;
+                left = midStability;
+            }
+        }
+
+        return result;
+    }
+}
