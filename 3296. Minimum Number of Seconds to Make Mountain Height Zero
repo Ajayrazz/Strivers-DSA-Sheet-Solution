@@ -1,0 +1,35 @@
+class Solution {
+    public long minNumberOfSeconds(int mountainHeight, int[] workerTimes) {
+        int maxTime = -1;
+        for( int time : workerTimes ) {
+            maxTime = maxTime < time ? time : maxTime;
+        }
+
+        long l = 1;
+        long r = (long) maxTime * mountainHeight * ( mountainHeight + 1 ) / 2;
+        long result = 0;
+        while( l <= r ) {
+            long mid = l + ( r - l ) / 2;
+            if( check( mid, workerTimes, mountainHeight ) ) {
+                result = mid;
+                r = mid  - 1;
+            }
+            else{
+                l = mid + 1;
+            }
+        }
+
+        return result;
+    }
+
+    boolean check( long mid, int[] workerTimes, int mountainHeight ) {
+        long h = 0; 
+        for( int t : workerTimes ) {
+            h += (long) ( Math.sqrt( 2.0 * mid / t + 0.25 ) - 0.5 );
+            if( h >= mountainHeight ) {
+                return true;
+            }
+        }
+        return h >= mountainHeight;
+    }
+}
