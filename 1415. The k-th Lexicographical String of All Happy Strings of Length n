@@ -1,0 +1,24 @@
+class Solution {
+    public String getHappyString(int n, int k) {
+        List<String> result = new ArrayList<>();
+        generate(n, "", result);
+        if (result.size() < k) {
+            return "";
+        }
+        return result.get(k - 1);
+    }
+
+    //generate function
+    private void generate(int n, String current, List<String> result) {
+        if (current.length() == n) {
+            result.add(current);
+            return;
+        }
+        for (char ch = 'a'; ch <= 'c'; ch++) {
+            if (current.length() > 0 && current.charAt(current.length() - 1) == ch) {
+                continue;
+            }
+            generate(n, current + ch, result);
+        }
+    }
+}
