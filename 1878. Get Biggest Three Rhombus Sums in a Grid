@@ -1,0 +1,60 @@
+class Solution {
+    int[] largest = new int[3];
+    public int[] getBiggestThree(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        if(m == 1 && n == 1)    return new int[]{grid[0][0]};
+        if(m == 1 && n == 2) {
+            int val1 = grid[0][0], val2 = grid[0][1];
+            return new int[]{(int) Math.max(val1, val2), (int) Math.max(val1, val2)};
+        }
+
+        if(m == 2 && n == 1) {
+            int val1 = grid[0][0], val2 = grid[1][0];
+            return new int[]{(int) Math.max(val1, val2), (int) Math.max(val1, val2)};
+        }
+
+        for(int l = 0; l <= ((int) Math.min(m, n) - 1) / 2; l++) {
+            for(int i = l; i < m - l; i++) {
+                for(int j = l; j < n - l; j++) {
+                    int value = sumAround(l, grid, i, j);
+                    if(value > largest[2] && value != largest[1] && value != largest[0]) {
+                        addValue(value);
+                    }
+                }
+            }
+        }
+
+        if(largest[1] == 0) return new int[]{largest[0]};
+        if(largest[2] == 0) return new int[]{largest[0],largest[1]};
+        return largest;
+    }
+
+    private int sumAround(int l,int[][] grid,int x,int y) {
+        if(l == 0)    return grid[x][y];
+        int value = grid[x-l][y];
+        int add = 0;
+        for(int i = x - l + 1; i <= x; i++) {
+            add++;
+            value += grid[i][y-add] + grid[i][y+add];
+        }
+        for(int i = x + 1; i < x + l; i++) {
+            add--;
+            value += grid[i][y - add] + grid[i][y + add];
+        }
+        value += grid[x+l][y];
+        return value;
+    }
+
+    private void addValue(int value) {
+        if(value < largest[1]) {
+            largest[2] = value;
+        } else if(value < largest[0]) {
+            largest[2] = largest[1];
+            largest[1] = value;
+        } else {
+            largest[2] = largest[1];
+            largest[1] = largest[0];
+            largest[0] = value;
+        }
+    }
+}
