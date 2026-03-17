@@ -1,0 +1,28 @@
+class Solution {
+    public int largestSubmatrix(int[][] matrix) {
+        for (int i = 1; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                if (matrix[i][j] != 0) {
+                    matrix[i][j] += matrix[i - 1][j];
+                }
+            }
+        }
+
+        int answer = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            int[] tempArr = matrix[i].clone();
+            Arrays.sort(tempArr);
+            for (int idx = 0; idx < matrix[0].length; idx++) {
+                int ht = tempArr[idx];
+                int wd = matrix[0].length - idx;
+                int currArea = ht * wd;
+
+                if (currArea > answer) {
+                    answer = currArea;
+                }
+            }
+        }
+
+        return answer;
+    }
+}
