@@ -1,0 +1,39 @@
+class Solution {
+    public int[][] minAbsDiff(int[][] matrix, int size) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int[][] answer = new int[rows - size + 1][cols - size + 1];
+        for (int r = 0; r <= rows - size; r++) {
+            for (int c = 0; c <= cols - size; c++) {
+                List<Integer> values = extractSubgrid(matrix, r, c, size);
+                Collections.sort(values);
+                answer[r][c] = computeMinDifference(values);
+            }
+        }
+
+        return answer;
+    }
+
+    private List<Integer> extractSubgrid(int[][] matrix, int startRow, int startCol, int size) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = startRow; i < startRow + size; i++) {
+            for (int j = startCol; j < startCol + size; j++) {
+                list.add(matrix[i][j]);
+            }
+        }
+
+        return list;
+    }
+
+    private int computeMinDifference(List<Integer> sortedList) {
+        int minDiff = Integer.MAX_VALUE;
+        for (int i = 1; i < sortedList.size(); i++) {
+            int current = sortedList.get(i);
+            int previous = sortedList.get(i - 1);
+            if (current == previous) continue;
+            minDiff = Math.min(minDiff, current - previous);
+        }
+
+        return (minDiff == Integer.MAX_VALUE) ? 0 : minDiff;
+    }
+}
