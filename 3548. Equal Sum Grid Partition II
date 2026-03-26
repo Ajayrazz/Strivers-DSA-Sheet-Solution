@@ -1,0 +1,66 @@
+class Solution {
+    public boolean canPartitionGrid(int[][] grid) {
+        long totalSum = calculateTotal(grid);
+        for (int rotation = 0; rotation < 4; rotation++) {
+            int rows = grid.length, cols = grid[0].length;
+            if (rows < 2) {
+                grid = rotateGrid(grid);
+                continue;
+            }
+            long prefixSum = 0;
+            Set<Long> seenValues = new HashSet<>();
+            seenValues.add(0L);
+            if (cols == 1) {
+                for (int i = 0; i < rows - 1; i++) {
+                    prefixSum += grid[i][0];
+                    long diff = prefixSum * 2 - totalSum;
+                    if (diff == 0 || diff == grid[0][0] || diff == grid[i][0]) {
+                        return true;
+                    }
+                }
+                grid = rotateGrid(grid);
+                continue;
+            }
+            
+            for (int i = 0; i < rows - 1; i++) {
+                for (int j = 0; j < cols; j++) {
+                    prefixSum += grid[i][j];
+                    seenValues.add((long) grid[i][j]);
+                }
+                long diff = prefixSum * 2 - totalSum;
+                if (i == 0) {
+                    if (diff == 0 || diff == grid[0][0] || diff == grid[0][cols - 1]) {
+                        return true;
+                    }
+                } else {
+                    if (seenValues.contains(diff)) {
+                        return true;
+                    }
+                }
+            }
+            grid = rotateGrid(grid);
+        }
+        return false;
+    }
+
+    private long calculateTotal(int[][] grid) {
+        long sum = 0;
+        for (int[] row : grid) {
+            for (int val : row) {
+                sum += val;
+            }
+        }
+        return sum;
+    }
+
+    private int[][] rotateGrid(int[][] grid) {
+        int rows = grid.length, cols = grid[0].length;
+        int[][] rotated = new int[cols][rows];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                rotated[j][rows - 1 - i] = grid[i][j];
+            }
+        }
+        return rotated;
+    }
+}
