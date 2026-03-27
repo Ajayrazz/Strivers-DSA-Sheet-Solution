@@ -1,0 +1,40 @@
+class Solution {
+    public boolean areSimilar(int[][] mat, int k) {
+        int[][] copy_mat = new int[mat.length][mat[0].length];
+        for(int i = 0; i < mat.length; i++){
+            for(int j = 0; j < mat[0].length; j++){
+                copy_mat[i][j] = mat[i][j];
+            }
+        }
+        k = k % mat[0].length;
+        while(k-- > 0){
+            for(int sr = 0; sr < mat.length; sr++){
+                if(sr % 2 == 0){
+                    // left shift
+                    int temp = copy_mat[sr][0];
+                    for(int sc = 1; sc < mat[0].length; sc++){
+                        copy_mat[sr][sc - 1] = copy_mat[sr][sc]; 
+                    }
+                    copy_mat[sr][mat[0].length - 1] = temp;
+                }
+                else {
+                    // right shift
+                    int temp = copy_mat[sr][mat[0].length - 1];
+                    for(int sc = mat[0].length - 1; sc > 0; sc--){
+                        copy_mat[sr][sc] = copy_mat[sr][sc - 1];
+                    }
+                    copy_mat[sr][0] = temp;
+                }
+            }
+        }
+
+        // Compare matrices
+        for(int i = 0; i < mat.length; i++){
+            for(int j = 0; j < mat[0].length; j++){
+                if(mat[i][j] != copy_mat[i][j]) return false;
+            }
+        }
+
+        return true;
+    }
+}
