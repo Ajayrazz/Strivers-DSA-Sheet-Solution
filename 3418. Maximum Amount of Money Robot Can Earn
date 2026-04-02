@@ -1,0 +1,40 @@
+class Solution {
+    public int maximumAmount(int[][] coins) {
+        int n = coins.length, m = coins[0].length;
+        int[][][] dp = new int[n][m][3];
+        for(int[][] arr : dp){
+            for(int[] row : arr){
+                Arrays.fill(row, Integer.MIN_VALUE);
+            }
+        }
+        return Helper(0, 0, 2, dp, coins);
+    }
+
+    public int Helper(int row, int col, int k, int[][][] dp, int[][] coins){
+        //case 1
+        if(row >= coins.length || col >= coins[0].length) return Integer.MIN_VALUE;
+
+        int current_val = coins[row][col];
+        //case 2
+        if(row == coins.length - 1 && col == coins[0].length - 1){
+            return (k > 0) ? Math.max(0, current_val) : current_val;
+        }
+
+        //case 3
+        if(dp[row][col][k] != Integer.MIN_VALUE) return dp[row][col][k];
+
+        int down = Helper(row + 1, col, k, dp, coins);
+        int right = Helper(row, col + 1, k, dp, coins);
+
+        int bestNext = Math.max(down, right);
+        int result = (bestNext == Integer.MIN_VALUE) ? Integer.MIN_VALUE : bestNext + current_val;
+
+        if(k > 0 && current_val < 0){
+            int skipDown = Helper(row + 1, col, k - 1, dp, coins);
+            int skipRight = Helper(row, col + 1, k - 1, dp, coins);
+            result = Math.max(result, Math.max(skipDown, skipRight));
+        }
+
+        return dp[row][col][k] = result;
+    }
+}
