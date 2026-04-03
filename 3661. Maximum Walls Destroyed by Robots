@@ -1,0 +1,59 @@
+class Solution {
+    private Integer[][] dp;
+    private int[][] robotsData;
+    private int[] wallPositions;
+    private int size;
+
+    public int maxWalls(int[] robotPos, int[] reach, int[] walls) {
+        size = robotPos.length;
+        robotsData = new int[size][2];
+        for (int i = 0; i < size; i++) {
+            robotsData[i][0] = robotPos[i];
+            robotsData[i][1] = reach[i];
+        }
+
+        Arrays.sort(robotsData, (a, b) -> Integer.compare(a[0], b[0]));
+        Arrays.sort(walls);
+        wallPositions = walls;
+        dp = new Integer[size][2];
+        return compute(size - 1, 1);
+    }
+
+    private int compute(int index, int state) {
+        if (index < 0) return 0;
+        if (dp[index][state] != null) {
+            return dp[index][state];
+        }
+
+        int currentPos = robotsData[index][0];
+        int currentReach = robotsData[index][1];
+        int leftLimit = currentPos - currentReach;
+        if (index > 0) {
+            leftLimit = Math.max(leftLimit, robotsData[index - 1][0] + 1);
+        }
+
+        int leftStart = findLowerBound(wallPositions, leftLimit);
+        int leftEnd = findLowerBound(wallPositions, currentPos + 1);
+        int wallsLeft = leftEnd - leftStart;
+        int result = compute(index - 1, 0) + wallsLeft;
+        int rightLimit = currentPos + currentReach;
+        if (index + 1 < size) {
+            if (state == 0) {
+                rightLimit = Math.min(rightLimit, robotsData[index + 1][0] - robotsData[index + 1][1] - 1);
+            } else {
+                rightLimit = Math.min(rightLimit, robotsData[index + 1][0] - 1);
+            }
+        }
+
+        int rightStart = findLowerBound(wallPositions, currentPos);
+        int rightEnd = findLowerBound(wallPositions, rightLimit + 1);
+        int wallsRight = rightEnd - rightStart;
+        result = Math.max(result, compute(index - 1, 1) + wallsRight);
+        return dp[index][state] = result;
+    }
+
+    private int findLowerBound(int[] array, int target) {
+        int pos = Arrays.binarySearch(array, target);
+        return (pos < 0) ? -pos - 1 : pos;
+    }
+}
