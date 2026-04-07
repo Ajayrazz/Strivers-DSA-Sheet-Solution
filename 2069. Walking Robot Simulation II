@@ -1,0 +1,51 @@
+class Robot {
+    private int w, h;
+    private int posX, posY;
+    private int directionIndex;
+    private int perimeter;
+
+    // Movement arrays
+    private final int[] moveX = {1, 0, -1, 0};
+    private final int[] moveY = {0, 1, 0, -1};
+    private final String[] directionNames = {"East", "North", "West", "South"};
+
+    public Robot(int width, int height) {
+        this.w = width;
+        this.h = height;
+        this.posX = 0;
+        this.posY = 0;
+        this.directionIndex = 0;
+        this.perimeter = 2 * (w + h) - 4;
+    }
+
+    public void step(int steps) {
+        if (perimeter == 0) return;
+
+        steps %= perimeter;
+
+        while (steps > 0) {
+            int nextX = posX + moveX[directionIndex];
+            int nextY = posY + moveY[directionIndex];
+
+            if (nextX >= 0 && nextX < w && nextY >= 0 && nextY < h) {
+                posX = nextX;
+                posY = nextY;
+                steps--;
+            } else {
+                directionIndex = (directionIndex + 1) % 4;
+            }
+        }
+
+        if (posX == 0 && posY == 0) {
+            directionIndex = 3;
+        }
+    }
+
+    public int[] getPos() {
+        return new int[]{posX, posY};
+    }
+
+    public String getDir() {
+        return directionNames[directionIndex];
+    }
+}
