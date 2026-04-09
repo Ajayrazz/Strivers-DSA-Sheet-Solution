@@ -1,0 +1,49 @@
+class Solution {
+    public static final int MOD_VAL = (int)1e9 + 7;
+    public int xorAfterQueries(int[] nums, int[][] queries) {
+        int len = nums.length;
+        int blockSize = (int)Math.sqrt(len);
+        List<List<int[]>> bucket = new ArrayList<>();
+        for (int i = 0; i < blockSize; i++) bucket.add(new ArrayList<>());
+
+        for (int[] q : queries) {
+            int l = q[0], r = q[1], k = q[2], v = q[3];
+            if (k < blockSize) {
+                bucket.get(k).add(new int[]{l, r, v});
+            } else {
+                for (int i = l; i <= r; i += k) {
+                    nums[i] = (int)((nums[i] * 1L * v) % MOD_VAL);
+                }
+            }
+        }
+
+        long[] temp = new long[len + blockSize];
+        for (int k = 1; k < blockSize; k++) {
+            if (bucket.get(k).isEmpty()) continue;
+            Arrays.fill(temp, 1);
+            for (int[] q : bucket.get(k)) {
+                int l = q[0], r = q[1], v = q[2];
+                temp[l] = (temp[l] * v) % MOD_VAL;
+                int bound = ((r - l) / k + 1) * k + l;
+                temp[bound] = (temp[bound] * modPower(v, MOD_VAL - 2)) % MOD_VAL;
+            }
+            for (int i = k; i < len; i++) temp[i] = (temp[i] * temp[i - k]) % MOD_VAL;
+            for (int i = 0; i < len; i++) nums[i] = (int)((nums[i] * temp[i]) % MOD_VAL);
+        }
+
+        int res = 0;
+        for (int x : nums) res ^= x;
+        return res;
+    }
+
+    private int modPower(long base, long exp) {
+        long ans = 1;
+        base %= MOD_VAL;
+        while (exp > 0) {
+            if ((exp & 1) == 1) ans = (ans * base) % MOD_VAL;
+            base = (base * base) % MOD_VAL;
+            exp >>= 1;
+        }
+        return (int) ans;
+    }
+}
