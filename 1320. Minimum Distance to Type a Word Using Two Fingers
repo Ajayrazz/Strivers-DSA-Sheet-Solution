@@ -1,0 +1,69 @@
+class Solution {
+    public int minimumDistance(String text) {
+        int len = text.length();
+        int[][][] memo = new int[len][26][26];
+        for (int idx = 0; idx < len; idx++) {
+            for (int f1 = 0; f1 < 26; f1++) {
+                for (int f2 = 0; f2 < 26; f2++) {
+                    memo[idx][f1][f2] = Integer.MAX_VALUE / 2;
+                }
+            }
+        }
+
+        int firstChar = text.charAt(0) - 'A';
+        for (int pos = 0; pos < 26; pos++) {
+            memo[0][pos][firstChar] = 0;
+            memo[0][firstChar][pos] = 0;
+        }
+
+        for (int idx = 1; idx < len; idx++) {
+            int currChar = text.charAt(idx) - 'A';
+            int prevChar = text.charAt(idx - 1) - 'A';
+            int moveCost = calcDist(prevChar, currChar);
+
+            for (int f = 0; f < 26; f++) {
+                memo[idx][currChar][f] = Math.min(
+                    memo[idx][currChar][f],
+                    memo[idx - 1][prevChar][f] + moveCost
+                );
+
+                memo[idx][f][currChar] = Math.min(
+                    memo[idx][f][currChar],
+                    memo[idx - 1][f][prevChar] + moveCost
+                );
+
+                if (f == prevChar) {
+                    for (int other = 0; other < 26; other++) {
+                        int altCost = calcDist(other, currChar);
+
+                        memo[idx][currChar][f] = Math.min(
+                            memo[idx][currChar][f],
+                            memo[idx - 1][other][f] + altCost
+                        );
+
+                        memo[idx][f][currChar] = Math.min(
+                            memo[idx][f][currChar],
+                            memo[idx - 1][f][other] + altCost
+                        );
+                    }
+                }
+            }
+        }
+
+        int result = Integer.MAX_VALUE / 2;
+        for (int x = 0; x < 26; x++) {
+            for (int y = 0; y < 26; y++) {
+                result = Math.min(result, memo[len - 1][x][y]);
+            }
+        }
+
+        return result;
+    }
+
+    //calcDist function
+    private int calcDist(int a, int b) {
+        int r1 = a / 6, c1 = a % 6;
+        int r2 = b / 6, c2 = b % 6;
+        return Math.abs(r1 - r2) + Math.abs(c1 - c2);
+    }
+}
