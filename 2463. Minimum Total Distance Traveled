@@ -1,0 +1,36 @@
+class Solution {
+    private long[][] memo;
+    public long minimumTotalDistance(List<Integer> robots, int[][] factories) {
+        Collections.sort(robots);
+        Arrays.sort(factories, Comparator.comparingInt(a -> a[0]));
+        List<Integer> factoryPositions = expandFactories(factories);
+        memo = new long[robots.size()][factoryPositions.size()];
+        for (long[] row : memo){
+            Arrays.fill(row, -1);
+        }
+        return solve(0, 0, robots, factoryPositions);
+    }
+
+    private List<Integer> expandFactories(int[][] factories) {
+        List<Integer> positions = new ArrayList<>();
+        for (int[] factory : factories){
+            int position = factory[0], capacity = factory[1];
+            for (int i = 0; i < capacity; i++){
+                positions.add(position);
+            }
+        }
+        return positions;
+    }
+
+    private long solve(int robotIndex, int factoryIndex, List<Integer> robots, List<Integer> factories) {
+        if (robotIndex == robots.size()) return 0;
+        if (factoryIndex == factories.size()) return Long.MAX_VALUE / 2;
+
+        if (memo[robotIndex][factoryIndex] != -1) return memo[robotIndex][factoryIndex];
+
+        long skip = solve(robotIndex, factoryIndex + 1, robots, factories);
+        long assign = Math.abs(robots.get(robotIndex) - factories.get(factoryIndex)) + solve(robotIndex + 1, factoryIndex + 1, robots, factories);
+        
+        return memo[robotIndex][factoryIndex] = Math.min(skip, assign);
+    }
+}
