@@ -1,0 +1,28 @@
+class Solution {
+    public int maxDistance(int[] nums1, int[] nums2) {
+        int max_dist = Integer.MIN_VALUE;
+        for(int i = 0; i < nums1.length; i++){
+            int idx = binarySearch(nums2, nums1[i], i);
+            if(idx == -1) continue;
+            max_dist = Math.max(max_dist, (idx - i));
+        }
+        return max_dist == Integer.MIN_VALUE ? 0 : max_dist;
+    }
+
+    //binarySearch function
+    public int binarySearch(int[] nums, int target, int cur_idx){
+        int left = cur_idx, right = nums.length - 1;
+        int idx = -1;
+        while(left <= right){
+            int mid = left + (right - left) / 2;
+            if(nums[mid] >= target){
+                idx = mid;
+                left = mid + 1;
+            }
+            else {
+                right = mid - 1;
+            }
+        }
+        return idx;
+    }
+}
