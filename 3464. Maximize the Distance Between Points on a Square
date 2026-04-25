@@ -1,0 +1,85 @@
+class Solution {
+    public int maxDistance(int edge, int[][] coords, int k) {
+        int m = coords.length;
+        long totalPerimeter = 4L * edge;
+
+        long[] linear = new long[m];
+        for (int i = 0; i < m; i++) {
+            int px = coords[i][0];
+            int py = coords[i][1];
+
+            if (px == 0) linear[i] = py;
+            else if (py == edge) linear[i] = edge + px;
+            else if (px == edge) linear[i] = 3L * edge - py;
+            else linear[i] = 4L * edge - px;
+        }
+
+        Arrays.sort(linear);
+
+        long[] extended = new long[2 * m];
+        for (int i = 0; i < m; i++) {
+            extended[i] = linear[i];
+            extended[i + m] = linear[i] + totalPerimeter;
+        }
+
+        long low = 0, high = totalPerimeter;
+
+        while (low < high) {
+            long midDist = (low + high + 1) / 2;
+            if (isPossible(extended, linear, m, k, midDist, totalPerimeter)) {
+                low = midDist;
+            } else {
+                high = midDist - 1;
+            }
+        }
+
+        return (int) low;
+    }
+
+    //isPossible function
+    private boolean isPossible(long[] extended, long[] base, int size,
+                               int required, long gap, long perimeter) {
+
+        for (int i = 0; i < size; i++) {
+
+            int chosen = 1;
+            long startPoint = extended[i];
+            long prevPoint = extended[i];
+            int index = i;
+
+            for (int j = 1; j < required; j++) {
+                long needed = prevPoint + gap;
+
+                int next = findNext(extended, index + 1, i + size, needed);
+                if (next == -1) break;
+
+                prevPoint = extended[next];
+                index = next;
+                chosen++;
+            }
+
+            if (chosen == required && startPoint + perimeter - prevPoint >= gap) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    //findNext function
+    private int findNext(long[] arr, int start, int end, long value) {
+        int left = start, right = end - 1;
+        int result = -1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (arr[mid] >= value) {
+                result = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return result;
+    }
+}
