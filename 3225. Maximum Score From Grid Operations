@@ -1,0 +1,77 @@
+class Solution {
+    public long maximumScore(int[][] matrix) {
+
+        int rows = matrix.length, cols = matrix[0].length;
+        if (cols == 1) return 0;
+        long[][] colPrefix = buildColumnPrefix(matrix, rows, cols);
+        long[][] dp = new long[rows + 1][rows + 1];
+        long[][] pref = new long[rows + 1][rows + 1];
+        long[][] suff = new long[rows + 1][rows + 1];
+
+        for (int col = 1; col < cols; col++) {
+            long[][] next = computeNextDP(dp, pref, suff, colPrefix, rows, col);
+            updatePrefixSuffix(next, pref, suff, colPrefix, rows, col);
+            dp = next;
+        }
+
+        return extractAnswer(dp, rows);
+    }
+
+    // Build prefix sum for each column
+    private long[][] buildColumnPrefix(int[][] matrix, int rows, int cols) {
+        long[][] prefix = new long[cols][rows + 1];
+        for (int c = 0; c < cols; c++) {
+            for (int r = 0; r < rows; r++) {
+                prefix[c][r + 1] = prefix[c][r] + matrix[r][c];
+            }
+        }
+        return prefix;
+    }
+
+    // Compute DP transition
+    private long[][] computeNextDP(long[][] dp, long[][] pref, long[][] suff, long[][] colPrefix, int rows, int col) {
+        long[][] next = new long[rows + 1][rows + 1];
+        for (int curr = 0; curr <= rows; curr++) {
+            for (int prev = 0; prev <= rows; prev++) {
+                if (curr <= prev) {
+                    long gain = colPrefix[col][prev] - colPrefix[col][curr];
+                    next[curr][prev] = Math.max(next[curr][prev], suff[prev][0] + gain
+                    );
+                } else {
+                    long gain = colPrefix[col - 1][curr] - colPrefix[col - 1][prev];
+                    next[curr][prev] = Math.max(next[curr][prev], Math.max(suff[prev][curr], pref[prev][curr] + gain));
+                }
+            }
+        }
+        return next;
+    }
+
+    // Update prefix max and suffix max arrays
+    private void updatePrefixSuffix(long[][] dp, long[][] pref, long[][] suff, long[][] colPrefix, int rows, int col) {
+        for (int curr = 0; curr <= rows; curr++) {
+            pref[curr][0] = dp[curr][0];
+            for (int prev = 1; prev <= rows; prev++) {
+                long penalty = (prev > curr) ? colPrefix[col][prev] - colPrefix[col][curr] : 0;
+                pref[curr][prev] = Math.max(pref[curr][prev - 1], dp[curr][prev] - penalty);
+            }
+
+            suff[curr][rows] = dp[curr][rows];
+            for (int prev = rows - 1; prev >= 0; prev--) {
+                suff[curr][prev] = Math.max(
+                        suff[curr][prev + 1],
+                        dp[curr][prev]
+                );
+            }
+        }
+    }
+
+    // Extract final result
+    private long extractAnswer(long[][] dp, int rows) {
+        long ans = 0;
+        for (int i = 0; i <= rows; i++) {
+            ans = Math.max(ans, Math.max(dp[0][i], dp[rows][i]));
+        }
+
+        return ans;
+    }
+}
