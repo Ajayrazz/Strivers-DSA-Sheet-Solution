@@ -1,0 +1,48 @@
+class Solution {
+    public int closedIsland(int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        int[] dx = {1, 0, 0, -1};
+        int[] dy = {0, -1, 1, 0};
+
+        //remove closest boundary
+        for(int i = 0; i < n; i++){
+            dfs(i, 0, grid, dx, dy);
+            dfs(i, m - 1, grid, dx, dy);
+        }
+
+        for(int j = 0; j < m; j++){
+            dfs(0, j, grid, dx, dy);
+            dfs(n - 1, j, grid, dx, dy);
+        }
+
+        int count = 0;
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(grid[i][j] == 0){
+                    count += 1;
+                    dfs(i, j, grid, dx, dy);
+                }
+            }
+        }
+
+        return count;
+    }
+
+    //dfs function
+    public void dfs(int row, int col, int[][] grid, int[] dx, int[] dy){
+        //base case
+        if(row < 0 || col < 0 || row >= grid.length || col >= grid[0].length || grid[row][col] == 1){
+            return;
+        }
+
+        grid[row][col] = 1;
+        for(int index = 0; index < 4; index++){
+            int nRow = row + dx[index];
+            int nCol = col + dy[index];
+
+            if(nRow >= 0 && nCol >= 0 && nRow < grid.length && nCol < grid[0].length && grid[nRow][nCol] == 0){
+                dfs(nRow, nCol, grid, dx, dy);
+            }
+        }
+    }
+}
