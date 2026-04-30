@@ -1,0 +1,48 @@
+class Solution {
+    public int maxPathScore(int[][] grid, int k) {
+        int n = grid.length, m = grid[0].length;
+        int[][][] dp = new int[n][m][k + 1];
+        
+        for (int[][] layer : dp) {
+            for (int[] row : layer) {
+                Arrays.fill(row, -1);
+            }
+        }
+
+        int ans = -1;
+        for (int cost = 0; cost <= k; cost++) {
+            int res = solve(n - 1, m - 1, cost, grid, dp);
+            ans = Math.max(ans, res);
+        }
+
+        return ans < 0 ? -1 : ans;
+    }
+
+    public int solve(int row, int col, int cost, int[][] grid, int[][][] dp) {
+        // invalid
+        if (row < 0 || col < 0 || cost < 0) return Integer.MIN_VALUE;
+
+        int cell = grid[row][col];
+        int cellCost = (cell == 0) ? 0 : 1;
+        int cellScore = cell;
+
+        // base case
+        if (row == 0 && col == 0) {
+            if (cost == cellCost) return cellScore;
+            return Integer.MIN_VALUE;
+        }
+
+        if (dp[row][col][cost] != -1) return dp[row][col][cost];
+
+        int up = solve(row - 1, col, cost - cellCost, grid, dp);
+        int left = solve(row, col - 1, cost - cellCost, grid, dp);
+
+        int best = Math.max(up, left);
+
+        if (best == Integer.MIN_VALUE) {
+            return dp[row][col][cost] = Integer.MIN_VALUE;
+        }
+
+        return dp[row][col][cost] = best + cellScore;
+    }
+}
