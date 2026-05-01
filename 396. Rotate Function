@@ -1,0 +1,34 @@
+class Solution {
+    public int maxRotateFunction(int[] nums) {
+        int n = nums.length;
+        long totalSum = calculateSum(nums), currentValue = calculateInitial(nums), maxValue = currentValue;
+        for (int i = n - 1; i > 0; i--) {
+            currentValue = getNextRotationValue(currentValue, totalSum, nums[i], n);
+            maxValue = Math.max(maxValue, currentValue);
+        }
+        return (int) maxValue;
+    }
+
+    //calculateSum function
+    private long calculateSum(int[] nums) {
+        long sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        return sum;
+    }
+
+    //calculateInitial function
+    private long calculateInitial(int[] nums) {
+        long value = 0;
+        for (int i = 0; i < nums.length; i++) {
+            value += (long) i * nums[i];
+        }
+        return value;
+    }
+
+    //getNextRotationValue function
+    private long getNextRotationValue(long prev, long sum, int lastElement, int n) {
+        return prev + sum - (long) n * lastElement;
+    }
+}
