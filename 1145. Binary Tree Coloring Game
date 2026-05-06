@@ -1,0 +1,50 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    public int left = 0, right = 0;
+    public boolean btreeGameWinningMove(TreeNode root, int n, int x) {
+        find(root, x);
+        int parent = n - left - right - 1;
+        if (left > n / 2 || right > n / 2 || parent > n / 2) {
+            return true;
+        }
+        return false;
+    }
+
+    //find function
+    public void find(TreeNode root, int x) {
+        if (root == null) {
+            return;
+        }
+        if (root.val == x) {
+            left = countNodes(root.left);
+            right = countNodes(root.right);
+            return;
+        }
+
+        find(root.left, x);
+        find(root.right, x);
+    }
+
+    //countNodes function
+    public int countNodes(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        return countNodes(root.left) + countNodes(root.right) + 1;
+    }
+}
