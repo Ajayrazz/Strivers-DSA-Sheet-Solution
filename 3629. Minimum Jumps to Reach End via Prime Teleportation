@@ -1,0 +1,90 @@
+class Solution {
+    public int minJumps(int[] nums) {
+        int n = nums.length;
+        if (n <= 1) {
+            return 0;
+        }
+
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            Set<Integer> primeFactors = getPrimes(nums[i]);
+            for (int p : primeFactors) {
+                if (!adj.containsKey(p)) {
+                    adj.put(p, new ArrayList<>());
+                }
+                adj.get(p).add(i);
+            }
+        }
+
+        Queue<Integer> q = new LinkedList<>();
+        boolean[] visited = new boolean[n];
+        Set<Integer> usedPrimes = new HashSet<>();
+
+        q.add(0);
+        visited[0] = true;
+        int count = 0;
+
+        while (!q.isEmpty()) {
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                int curr = q.poll();
+
+                if (curr == n - 1) {
+                    return count;
+                }
+
+                if (curr + 1 < n && !visited[curr + 1]) {
+                    visited[curr + 1] = true;
+                    q.add(curr + 1);
+                }
+
+                if (curr - 1 >= 0 && !visited[curr - 1]) {
+                    visited[curr - 1] = true;
+                    q.add(curr - 1);
+                }
+
+                int val = nums[curr];
+                if (check(val)) {
+                    if (!usedPrimes.contains(val) && adj.containsKey(val)) {
+                        for (int nextIdx : adj.get(val)) {
+                            if (!visited[nextIdx]) {
+                                visited[nextIdx] = true;
+                                q.add(nextIdx);
+                            }
+                        }
+                        usedPrimes.add(val);
+                    }
+                }
+            }
+            count++;
+        }
+
+        return -1;
+    }
+
+    //check function
+    public boolean check(int n) {
+        if (n < 2) return false;
+        for (int i = 2; i * i <= n; i++) {
+            if (n % i == 0) return false;
+        }
+        return true;
+    }
+
+    //getPrimes function
+    public Set<Integer> getPrimes(int n) {
+        Set<Integer> res = new HashSet<>();
+        for (int i = 2; i * i <= n; i++) {
+            if (n % i == 0) {
+                res.add(i);
+                while (n % i == 0) {
+                    n /= i;
+                }
+            }
+        }
+        if (n > 1) {
+            res.add(n);
+        }
+        return res;
+    }
+}
