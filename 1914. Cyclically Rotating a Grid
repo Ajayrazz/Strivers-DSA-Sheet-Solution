@@ -1,0 +1,88 @@
+class Solution {
+    public int[][] rotateGrid(int[][] grid, int k) {
+        if(grid == null || grid.length == 0) return grid;
+        int n = grid.length, m = grid[0].length;
+        int[][] result = new int[n][m];
+
+        int startRow = 0, startCol = 0, endRow = n - 1, endCol = m - 1;
+        while(startRow <= endRow && startCol <= endCol){
+            List<Integer> temp = new ArrayList<>();
+            //first row
+            for(int j = startCol; j <= endCol; j++){
+                temp.add(grid[startRow][j]);
+            }
+
+            //last column
+            for(int i = startRow + 1; i <= endRow; i++){
+                temp.add(grid[i][endCol]);
+            }
+
+            //last row
+            for(int j = endCol - 1; j >= startCol; j--){
+                if(startRow == endRow) continue;
+                temp.add(grid[endRow][j]);
+            }
+
+            //first column
+            for(int i = endRow - 1; i > startRow; i--){
+                if(startCol == endCol) continue;
+                temp.add(grid[i][startCol]);
+            }
+
+            int[] temp_arr = new int[temp.size()];
+            for(int i = 0; i < temp.size(); i++){
+                temp_arr[i] = temp.get(i);
+            }
+
+            int rotate = k % temp_arr.length;
+
+            // left rotate by rotate
+            reverse(temp_arr, 0, rotate - 1);
+            reverse(temp_arr, rotate, temp_arr.length - 1);
+            reverse(temp_arr, 0, temp_arr.length - 1);
+
+
+            //add to result
+            int index = 0;
+            //first row
+            for(int j = startCol; j <= endCol; j++){
+                result[startRow][j] = temp_arr[index++];
+            }
+
+            //last column
+            for(int i = startRow + 1; i <= endRow; i++){
+                result[i][endCol] = temp_arr[index++];
+            }
+
+            //last row
+            for(int j = endCol - 1; j >= startCol; j--){
+                if(startRow == endRow) continue;
+                result[endRow][j] = temp_arr[index++];
+            }
+
+            //first column
+            for(int i = endRow - 1; i > startRow; i--){
+                if(startCol == endCol) continue;
+                result[i][startCol] = temp_arr[index++];
+            }
+
+            startRow++;
+            startCol++;
+            endRow--;
+            endCol--;
+        }
+
+        return result;
+    }
+
+    //reverse function
+    public void reverse(int[] arr, int left, int right){
+        while(left <= right){
+            int temp = arr[left];
+            arr[left] = arr[right];
+            arr[right] = temp;
+            left++;
+            right--;
+        }
+    }
+}
