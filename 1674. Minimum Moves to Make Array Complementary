@@ -1,0 +1,25 @@
+class Solution {
+    public int minMoves(int[] nums, int limit) {
+        int n = nums.length;
+        int[] arr = new int[2 * limit + 2];
+        for (int i = 0; i < n / 2; i++) {
+            int a = nums[i],b = nums[n - 1 - i];
+            int min = Math.min(a, b), max = Math.max(a, b);
+            arr[2] += 2;
+            arr[2 * limit + 1] -= 2;
+
+            arr[min + 1] -= 1;
+            arr[max + limit + 1] += 1;
+            arr[min + max] -= 1;
+            arr[min + max + 1] += 1;
+        }
+
+        int ans = n, cur = 0;
+        for (int i = 2; i <= 2 * limit; i++) {
+            cur += arr[i];
+            ans = Math.min(ans, cur);
+        }
+
+        return ans;
+    }
+}
