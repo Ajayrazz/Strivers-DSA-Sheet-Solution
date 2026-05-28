@@ -1,0 +1,57 @@
+class Solution {
+    class Node {
+        Node[] child = new Node[26];
+        int bestIndex = -1;
+        int bestLen = Integer.MAX_VALUE;
+    }
+
+    public int[] stringIndices(String[] wordsContainer, String[] wordsQuery) {
+        Node root = new Node();
+        for (int i = 0; i < wordsContainer.length; i++) {
+            insert(root, wordsContainer[i], i);
+        }
+
+        int[] ans = new int[wordsQuery.length];
+        for (int i = 0; i < wordsQuery.length; i++) {
+            ans[i] = query(root, wordsQuery[i]);
+        }
+
+        return ans;
+    }
+
+    private void insert(Node root, String word, int index) {
+        Node curr = root;
+        int len = word.length();
+        update(curr, len, index);
+        for (int i = len - 1; i >= 0; i--) {
+            int c = word.charAt(i) - 'a';
+            if (curr.child[c] == null) {
+                curr.child[c] = new Node();
+            }
+            curr = curr.child[c];
+            update(curr, len, index);
+        }
+    }
+
+    private int query(Node root, String word) {
+        Node curr = root;
+        int ans = curr.bestIndex;
+        for (int i = word.length() - 1; i >= 0; i--) {
+            int c = word.charAt(i) - 'a';
+            if (curr.child[c] == null) {
+                break;
+            }
+            curr = curr.child[c];
+            ans = curr.bestIndex;
+        }
+
+        return ans;
+    }
+
+    private void update(Node node, int len, int index) {
+        if (len < node.bestLen || (len == node.bestLen && index < node.bestIndex)) {
+            node.bestLen = len;
+            node.bestIndex = index;
+        }
+    }
+}
