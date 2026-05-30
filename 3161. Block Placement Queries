@@ -1,0 +1,85 @@
+class Solution {
+    class FenwickTree {
+        int[] tree;
+        int size;
+        FenwickTree(int size) {
+            this.size = size;
+            tree = new int[size + 2];
+        }
+
+        void update(int index, int value) {
+            while (index <= size) {
+                tree[index] = Math.max(tree[index], value);
+                index += index & -index;
+            }
+        }
+
+        int getMax(int index) {
+            int answer = 0;
+            while (index > 0) {
+                answer = Math.max(answer, tree[index]);
+                index -= index & -index;
+            }
+
+            return answer;
+        }
+    }
+
+    public List<Boolean> getResults(int[][] queries) {
+        int maxPoint = 0;
+        for (int[] query : queries) {
+            maxPoint = Math.max(maxPoint, query[1]);
+        }
+
+        TreeSet<Integer> points = new TreeSet<>();
+        points.add(0);
+        for (int[] query : queries) {
+            if (query[0] == 1) {
+                points.add(query[1]);
+            }
+        }
+
+        FenwickTree fenwick = new FenwickTree(maxPoint + 1);
+        int previousPoint = 0;
+        for (int point : points) {
+            if (point == 0) {
+                continue;
+            }
+
+            int gap = point - previousPoint;
+            fenwick.update(point, gap);
+            previousPoint = point;
+        }
+
+        Boolean[] answers = new Boolean[queries.length];
+        for (int i = queries.length - 1; i >= 0; i--) {
+            int type = queries[i][0];
+            int x = queries[i][1];
+            if (type == 2) {
+                int blockSize = queries[i][2];
+                int bestGapBeforeX = fenwick.getMax(x);
+                int nearestObstacle = points.floor(x);
+                int spaceTillX = x - nearestObstacle;
+                int availableSpace = Math.max(bestGapBeforeX, spaceTillX);
+                answers[i] = availableSpace >= blockSize;
+            } else {
+                points.remove(x);
+                Integer leftObstacle = points.floor(x);
+                Integer rightObstacle = points.ceiling(x);
+                if (leftObstacle != null && rightObstacle != null) {
+                    int newGap = rightObstacle - leftObstacle;
+                    fenwick.update(rightObstacle, newGap);
+                }
+            }
+        }
+
+        List<Boolean> result = new ArrayList<>();
+        for (Boolean answer : answers) {
+            if (answer != null) {
+                result.add(answer);
+            }
+        }
+
+        return result;
+    }
+}
