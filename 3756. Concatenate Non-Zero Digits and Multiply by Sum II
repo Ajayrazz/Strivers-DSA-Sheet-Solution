@@ -1,0 +1,59 @@
+class Solution {
+    public int[] sumAndMultiply(String s, int[][] queries) {
+
+        int n = s.length();
+        int MOD = 1_000_000_007;
+
+        int[] digitSum = new int[n + 1];
+        int[] nonZeroCnt = new int[n + 1];
+        long[] concatValue = new long[n + 1];
+        long[] power = new long[n + 1];
+
+        power[0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            power[i] = (power[i - 1] * 10) % MOD;
+        }
+
+        for (int i = 0; i < n; i++) {
+
+            int d = s.charAt(i) - '0';
+
+            digitSum[i + 1] = digitSum[i] + d;
+
+            nonZeroCnt[i + 1] = nonZeroCnt[i];
+            concatValue[i + 1] = concatValue[i];
+
+            if (d != 0) {
+                nonZeroCnt[i + 1]++;
+
+                concatValue[i + 1] =
+                        (concatValue[i + 1] * 10 + d) % MOD;
+            }
+        }
+
+        int[] ans = new int[queries.length];
+
+        for (int i = 0; i < queries.length; i++) {
+
+            int start = queries[i][0];
+            int end = queries[i][1];
+
+            long total = digitSum[end + 1] - digitSum[start];
+
+            int leftCount = nonZeroCnt[start];
+            int rightCount = nonZeroCnt[end + 1];
+
+            int digits = rightCount - leftCount;
+
+            long number = concatValue[end + 1]
+                    - (concatValue[start] * power[digits]) % MOD;
+
+            number = (number + MOD) % MOD;
+
+            ans[i] = (int) ((number * total) % MOD);
+        }
+
+        return ans;
+    }
+}
