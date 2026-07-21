@@ -1,0 +1,22 @@
+class Solution {
+    public int maxActiveSectionsAfterTrade(String s) {
+        int oneCount = 0, prevZero = Integer.MIN_VALUE, maxAdd = 0, i = 0;
+        while (i < s.length()) {
+            char ch = s.charAt(i);
+            int len = 0;
+            while (i < s.length() && s.charAt(i) == ch) {
+                len++;
+                i++;
+            }
+
+            if (ch == '1') {
+                oneCount += len;
+            } else {
+                maxAdd = Math.max(maxAdd, prevZero + len);
+                prevZero = len;
+            }
+        }
+
+        return oneCount + maxAdd;
+    }
+}
