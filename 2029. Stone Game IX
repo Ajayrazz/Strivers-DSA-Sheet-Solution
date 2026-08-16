@@ -1,0 +1,24 @@
+class Solution {
+    public boolean stoneGameIX(int[] stones) {
+        int zero = 0, one = 0, two = 0;
+        for (int value : stones) {
+            switch (value % 3) {
+                case 0:
+                    zero++;
+                    break;
+                case 1:
+                    one++;
+                    break;
+                case 2:
+                    two++;
+                    break;
+            }
+        }
+
+        if (zero % 2 == 0) {
+            return one >= 1 && two >= 1;
+        }
+        int difference = one - two;
+        return difference > 2 || difference < -2;
+    }
+}
