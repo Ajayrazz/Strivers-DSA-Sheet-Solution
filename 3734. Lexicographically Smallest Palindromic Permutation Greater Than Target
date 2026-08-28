@@ -1,0 +1,83 @@
+class Solution {
+    public String lexPalindromicPermutation(String word, String target) {
+        int size = word.length();
+        if (size == 1) {
+            return word.compareTo(target) > 0 ? word : "";
+        }
+        int[] counts = new int[26];
+        for (char ch : word.toCharArray()) {
+            counts[ch - 'a']++;
+        }
+
+        char center = 0;
+        for (int i = 0; i < 26; i++) {
+            if ((counts[i] & 1) == 1) {
+                if (center != 0) {
+                    return "";
+                }
+                center = (char) ('a' + i);
+            }
+
+            counts[i] /= 2;
+        }
+
+        StringBuilder firstHalf = new StringBuilder();
+        for (int pos = 0; pos < size / 2; pos++) {
+            boolean selected = false;
+            for (int letter = 0; letter < 26; letter++) {
+                if (counts[letter] == 0) {
+                    continue;
+                }
+                counts[letter]--;
+                char currentChar = (char) ('a' + letter);
+                if (isPossible(firstHalf, currentChar, counts, center, target)) {
+                    firstHalf.append(currentChar);
+                    selected = true;
+                    break;
+                }
+
+                counts[letter]++;
+            }
+
+            if (!selected) {
+                return "";
+            }
+
+            if (firstHalf.charAt(pos) > target.charAt(pos)) {
+                StringBuilder rest = new StringBuilder(firstHalf);
+                for (int letter = 0; letter < 26; letter++) {
+                    while (counts[letter] > 0) {
+                        rest.append((char) ('a' + letter));
+                        counts[letter]--;
+                    }
+                }
+                return makePalindrome(rest, center);
+            }
+        }
+        return makePalindrome(firstHalf, center);
+    }
+
+    private boolean isPossible(StringBuilder prefix, char added, int[] available, char center, String target) {
+        int[] temp = available.clone();
+        StringBuilder left = new StringBuilder(prefix);
+        left.append(added);
+        for (int i = 25; i >= 0; i--) {
+            while (temp[i] > 0) {
+                left.append((char) ('a' + i));
+                temp[i]--;
+            }
+        }
+
+        String candidate = makePalindrome(left, center);
+        return candidate.compareTo(target) > 0;
+    }
+
+    private String makePalindrome(StringBuilder half, char center) {
+        StringBuilder answer = new StringBuilder(half);
+        if (center != 0) {
+            answer.append(center);
+        }
+        answer.append(new StringBuilder(half).reverse());
+        return answer.toString();
+    }
+}
